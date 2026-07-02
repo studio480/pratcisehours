@@ -151,6 +151,7 @@ main{position:relative;z-index:10}
   animation:pinDrop .6s cubic-bezier(.34,1.56,.64,1) both}
 .session:nth-child(1){--r:-2deg;transform:rotate(-2deg);animation-delay:0s}
 .session:nth-child(2){--r:1.6deg;transform:rotate(1.6deg);animation-delay:.08s}
+.session:nth-child(3){--r:-1.2deg;transform:rotate(-1.2deg);animation-delay:.16s}
 .stack{position:relative;width:210px;height:250px}
 .stack .polaroid{position:absolute;width:184px;padding:9px 9px 30px;transition:transform .5s cubic-bezier(.34,1.56,.64,1),box-shadow .5s}
 .stack .polaroid .cap{font-size:15px;padding-top:9px}
@@ -166,6 +167,7 @@ main{position:relative;z-index:10}
   transform:rotate(.8deg);box-shadow:0 8px 18px rgba(40,25,8,.28),0 2px 5px rgba(40,25,8,.22);
   text-align:center;min-width:178px}
 .session:nth-child(2) .session-tag{transform:rotate(-1.4deg)}
+.session:nth-child(3) .session-tag{transform:rotate(1.2deg)}
 .session-tag .st-name{font-family:'Caveat',cursive;font-weight:700;font-size:25px;line-height:1;color:var(--ink)}
 .session-tag .st-meta{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.13em;text-transform:uppercase;
   color:var(--ink-faint);margin-top:6px}
@@ -445,14 +447,37 @@ footer{position:relative;z-index:10;display:flex;align-items:center;justify-cont
           </div>
         </button>
 
+        <button class="session" data-session="c3" aria-label="Open Practise Hours 1.3">
+          <div class="stack">
+            <div class="polaroid">
+              <div class="pin blue"></div>
+              <div class="photo"><img src="https://lh3.googleusercontent.com/d/1M2ss1tzypF-BqZog2LI6ftw-dNs1BHLX" alt="Practise Hours 1.3" loading="lazy"></div>
+              <div class="cap">1.3</div>
+            </div>
+            <div class="polaroid">
+              <div class="photo"><img src="https://lh3.googleusercontent.com/d/1vP3AlR00yLafR-OtM6oL6gXXCm8jJI2y" alt="" loading="lazy"></div>
+              <div class="cap">&nbsp;</div>
+            </div>
+            <div class="polaroid">
+              <div class="photo"><img src="https://lh3.googleusercontent.com/d/1TkhisCXSA1KKYaAglNjdIJlJxIAU-aUJ" alt="" loading="lazy"></div>
+              <div class="cap">&nbsp;</div>
+            </div>
+          </div>
+          <div class="session-tag">
+            <div class="st-name">Session 1.3</div>
+            <div class="st-meta">Third Edition · 26 frames</div>
+            <div class="st-open">Open the stack →</div>
+          </div>
+        </button>
+
       </div>
 
       <div class="board-props">
         <div class="sticky-note">
           <div class="pin violet" style="top:-13px"></div>
           <div class="sn-label">Next Session</div>
-          <div class="sn-name">1.3</div>
-          <div class="sn-date">20 June · Dubai</div>
+          <div class="sn-name">1.4</div>
+          <div class="sn-date">23 July · London</div>
           <a href="#/getinvolved">Get involved →</a>
         </div>
 
@@ -495,7 +520,7 @@ footer{position:relative;z-index:10;display:flex;align-items:center;justify-cont
       </div>
       <div class="about-side">
         <div class="stat-grid">
-          <div class="stat-card"><div class="pin"></div><div class="sc-n">02</div><div class="sc-l">Sessions Held</div></div>
+          <div class="stat-card"><div class="pin"></div><div class="sc-n">03</div><div class="sc-l">Sessions Held</div></div>
           <div class="stat-card"><div class="sc-n">01</div><div class="sc-l">Coming Up</div></div>
           <div class="stat-card"><div class="sc-n">03</div><div class="sc-l">Disciplines</div></div>
           <div class="stat-card"><div class="sc-n">2026</div><div class="sc-l">Since</div></div>
@@ -521,7 +546,7 @@ footer{position:relative;z-index:10;display:flex;align-items:center;justify-cont
         <div class="next-note">
           <div class="pin violet" style="top:-13px"></div>
           <div class="nn-label">Next Session</div>
-          <div class="nn-name">1.3 · 20 June</div>
+          <div class="nn-name">1.4 · 23 July · London</div>
           <div class="nn-cd" id="countdown">—</div>
         </div>
       </div>
@@ -658,6 +683,39 @@ const COLS = {
       'https://lh3.googleusercontent.com/d/1F2I1B9Ul7-uPwe1uyMYiCTgrus5nu86t',
       'https://lh3.googleusercontent.com/d/1cR45wD5S80W_JDh-fK84MLbFc55-Nlzj'
     ]
+  },
+  c3: {
+    title: 'Session 1.3',
+    meta: 'Third Edition · 26 frames · 2026',
+    capLabel: 'Practise Hours 1.3',
+    imgs: [
+      'https://lh3.googleusercontent.com/d/1M2ss1tzypF-BqZog2LI6ftw-dNs1BHLX',
+      'https://lh3.googleusercontent.com/d/1vP3AlR00yLafR-OtM6oL6gXXCm8jJI2y',
+      'https://lh3.googleusercontent.com/d/1TkhisCXSA1KKYaAglNjdIJlJxIAU-aUJ',
+      'https://lh3.googleusercontent.com/d/1jPt46N_xXvNtigru_SrUC6oa0Bz47Rt8',
+      'https://lh3.googleusercontent.com/d/12NssP2baiTCyPhd1BdOskq_jMck-m3Yj',
+      'https://lh3.googleusercontent.com/d/1lpO_Llm4r8v_vpcvK6oslSDEfHy4_JK2',
+      'https://lh3.googleusercontent.com/d/1XkZtsfV4qK5nw9eDOXAGsbj4aW0UTBH2',
+      'https://lh3.googleusercontent.com/d/1OpdZpHz3FNbQpaYdpNQFKrok2xvJ4r08',
+      'https://lh3.googleusercontent.com/d/1Tu00jSqn8nOHX46M7da4sFGGVvdsWnAS',
+      'https://lh3.googleusercontent.com/d/1HmoP7MYGArB-kWEZX2Vf3sU0P3Ie8ioi',
+      'https://lh3.googleusercontent.com/d/1vWQd66sJzUVWMBpRKU3tf2zqCS1K9M3-',
+      'https://lh3.googleusercontent.com/d/19eynfvN6JxhIVfhKo0xqA0P__nmxlaN5',
+      'https://lh3.googleusercontent.com/d/1DcJ6Aa6eTt_HEN5Fv_Coqy9qNSyf1eic',
+      'https://lh3.googleusercontent.com/d/1qxZlKBqCQ1amshCFZVQFOtzTvhr1Wa4l',
+      'https://lh3.googleusercontent.com/d/1lP1xf87oPl-rQNjnXOdaowsXGYwXYIyQ',
+      'https://lh3.googleusercontent.com/d/1REDTAvc8FmwQX4UhT6cGmoNmWeh5zTy1',
+      'https://lh3.googleusercontent.com/d/1UwSoSocm4mFdqWmlS1BfwWJ9pdM3bkiD',
+      'https://lh3.googleusercontent.com/d/1qyK5P8USqQ5N8sYBI7AOhzRJDTsIz040',
+      'https://lh3.googleusercontent.com/d/1GbvZWFdvQeqTkU7nwrSjQUxLnTkhvN-d',
+      'https://lh3.googleusercontent.com/d/18gghZeCDVmuwMLZSMaJ91wPv2M6fdktG',
+      'https://lh3.googleusercontent.com/d/172d5Yqd-rkourAAZl2o70QTjhqZDyd_R',
+      'https://lh3.googleusercontent.com/d/1jsaB84goMMIvc96YrE2IiQZ-NQhM8jIz',
+      'https://lh3.googleusercontent.com/d/1_4t7tehoOfg4fOqdUMOsVM2LkoHJQlTB',
+      'https://lh3.googleusercontent.com/d/1yWzkNGmlKA18iu6wbDEpUAAHwlY2q1K8',
+      'https://lh3.googleusercontent.com/d/1mbOK_uIIj--H7vAzqxjMKymWbr5LRBoM',
+      'https://lh3.googleusercontent.com/d/1IG69KSYfw3wC3ntVT4nquaBLpT-vb16y'
+    ]
   }
 };
 const PINS = ['', 'brass', 'blue', 'violet'];
@@ -762,7 +820,7 @@ document.addEventListener('keydown', e => {
 // ── COUNTDOWN ──
 (function(){
   const el = document.getElementById('countdown');
-  const target = new Date('2026-06-20T18:00:00');
+  const target = new Date('2026-07-23T18:00:00');
   function update(){
     const diff = target - new Date();
     if(diff <= 0){ el.textContent = 'Happening now'; return; }
