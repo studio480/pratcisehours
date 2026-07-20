@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practise Hours x Playing Outside — Register Interest</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+--ink:#0e0e12;
+--paper:#faf8f1;
+--paper-2:#f1eee1;
+--cobalt:#3d3ff2;
+--cobalt-d:#2523c4;
+--red:#e8432f;
+}
+
+html{scroll-behavior:smooth}
+body{
+background:var(--paper);
+color:var(--ink);
+font-family:'Space Grotesk',sans-serif;
+min-height:100vh;
+}
+
+.halftone{
+background-image:radial-gradient(rgba(255,255,255,.14) 1.4px, transparent 1.6px);
+background-size:13px 13px;
+}
+
+/* ── NAV/HERO ── */
+.hero{position:relative;background:var(--cobalt);border-bottom:3px solid var(--ink);padding:44px 24px 40px;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.14) 1.4px, transparent 1.6px);background-size:13px 13px}
+.hero-inner{position:relative;max-width:640px;margin:0 auto}
+.hero-eyebrow{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);background:var(--paper);border:2px solid var(--ink);padding:6px 14px;transform:rotate(-2deg);margin-bottom:18px}
+.hero h1{font-family:'Bagel Fat One',cursive;color:var(--paper);font-size:clamp(38px,8vw,58px);line-height:.9;text-shadow:3px 3px 0 var(--ink)}
+.hero-sub{margin-top:16px;font-size:15px;line-height:1.7;color:var(--paper);font-weight:500;max-width:460px}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.hero-tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:7px 12px;border:2px solid var(--ink)}
+.hero-tag.inv{background:var(--paper);color:var(--ink)}
+
+/* ── FORM SECTION ── */
+.wrap{max-width:640px;margin:0 auto;padding:36px 20px 60px}
+.note{
+position:relative;background:var(--paper-2);border:2.5px solid var(--ink);padding:16px 18px;margin-bottom:28px;
+transform:rotate(-0.6deg);font-family:'Space Mono',monospace;font-size:11.5px;line-height:1.7;color:var(--ink);
+}
+.note b{color:var(--cobalt-d)}
+
+.slip{position:relative;background:var(--paper);border:3px solid var(--ink);padding:32px 26px 34px;box-shadow:7px 7px 0 var(--ink)}
+.form-title{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:#fff;background:var(--ink);padding:8px 14px;display:inline-block;margin-bottom:24px}
+.form{display:flex;flex-direction:column;gap:20px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);opacity:.55}
+.field input{background:var(--paper-2);border:2px solid var(--ink);color:var(--ink);font-family:'Space Grotesk',sans-serif;font-size:15px;padding:10px 10px;outline:none;width:100%;transition:border-color .2s,background .2s}
+.field input::placeholder{color:var(--ink);opacity:.4}
+.field input:focus{border-color:var(--cobalt);background:var(--paper)}
+
+.options{display:flex;flex-direction:column;gap:10px}
+.opt{cursor:pointer;display:flex}
+.opt input{display:none}
+.opt span{
+display:flex;align-items:center;justify-content:space-between;width:100%;
+font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;
+padding:13px 16px;border:2px solid var(--ink);color:var(--ink);background:var(--paper-2);transition:all .2s;
+}
+.opt span small{font-family:'Space Mono',monospace;font-weight:400;font-size:10px;letter-spacing:.04em;opacity:.6;text-transform:uppercase}
+.opt input:checked+span{border-color:var(--cobalt);color:#fff;background:var(--cobalt)}
+.opt input:checked+span small{opacity:.85}
+
+.submit{margin-top:4px;cursor:pointer;border:2.5px solid var(--ink);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:16px 30px;transition:background .2s,color .2s,transform .15s;box-shadow:5px 5px 0 var(--cobalt)}
+.submit:hover{background:var(--cobalt);border-color:var(--cobalt)}
+.submit:active{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--cobalt)}
+.form-success{display:none;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:38px 0}
+.form-success.show{display:flex}
+.success-icon{width:50px;height:50px;border:3px solid var(--cobalt);border-radius:50%;display:flex;align-items:center;justify-content:center}
+.success-title{font-family:'Bagel Fat One',cursive;font-size:24px;color:var(--ink)}
+.success-sub{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);opacity:.55;max-width:340px;line-height:1.6}
+.form-error{display:none;font-size:11px;letter-spacing:.02em;color:var(--red);margin-top:4px;line-height:1.5;font-family:'Space Mono',monospace}
+.form-error.show{display:block}
+
+footer{text-align:center;padding:26px 20px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--ink);opacity:.5}
+footer span{color:var(--cobalt-d)}
+
+@media(max-width:480px){
+.form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+<div class="hero-inner">
+<div class="hero-eyebrow">Playing Outside x MarkMakerz</div>
+<h1>Register Your Interest.</h1>
+<p class="hero-sub">Creative headshots &amp; portraits, upstairs in the pink room. No brief. No client. Just practice.</p>
+<div class="hero-tags">
+<span class="hero-tag">25 July</span>
+<span class="hero-tag inv">2–6pm</span>
+<span class="hero-tag">Proposition Studios</span>
+</div>
+</div>
+</section>
+
+<div class="wrap">
+<div class="note">
+<b>This isn't a booking.</b> It's first come, first served on the day — registering just helps us plan and doesn't reserve you a slot. Come find us upstairs whether you've signed up here or not.
+</div>
+
+<div class="slip">
+<div class="form-title">Register Your Interest</div>
+
+<div class="form" id="contactForm">
+<div class="form-row">
+<div class="field"><label>First Name</label><input type="text" id="fname" placeholder="your first name"></div>
+<div class="field"><label>Last Name</label><input type="text" id="lname" placeholder="your last name"></div>
+</div>
+<div class="field"><label>Email Address</label><input type="email" id="email" placeholder="your@email.com"></div>
+<div class="field"><label>Instagram (optional)</label><input type="text" id="instagram" placeholder="@handle"></div>
+
+<div class="field">
+<label>Which are you interested in?</label>
+<div class="options">
+<label class="opt">
+<input type="checkbox" value="Digital Only (£2)">
+<span>Digital Only <small>£2</small></span>
+</label>
+<label class="opt">
+<input type="checkbox" value="Digital + Mini Print (£5)">
+<span>Digital + Mini Print <small>£5</small></span>
+</label>
+<label class="opt">
+<input type="checkbox" value="Double Mini Bundle (£8)">
+<span>Double Mini Bundle <small>£8</small></span>
+</label>
+<label class="opt">
+<input type="checkbox" value="Instax Wide Photo (£5)">
+<span>Instax Wide Photo <small>£5</small></span>
+</label>
+<label class="opt">
+<input type="checkbox" value="2x Instax Wide Photos (£8)">
+<span>2x Instax Wide Photos <small>£8</small></span>
+</label>
+</div>
+</div>
+
+<input type="checkbox" name="botcheck" id="botcheck" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+<button class="submit" id="submitBtn">Register Interest →</button>
+<div class="form-error" id="formError"></div>
+</div>
+
+<div class="form-success" id="formSuccess">
+<div class="success-icon">
+<svg width="22" height="22" viewBox="0 0 20 20" fill="none"><path d="M4 10L8 14L16 6" stroke="#3d3ff2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</div>
+<div class="success-title">You're on the list.</div>
+<div class="success-sub">Remember — it's first come, first served on the day. We'll see you at Proposition Studios, upstairs, 25th July.</div>
+</div>
+</div>
+</div>
+
+<footer>Practise Hours<span>.</span> x Playing Outside — 25 July, Proposition Studios</footer>
+
+<script>
+const ACCESS_KEY = "190ace1c-0ccb-4f75-a0ea-4c67a6e0c865";
+
+const submitBtn = document.getElementById('submitBtn');
+const errEl = document.getElementById('formError');
+const showErr = m => { errEl.textContent = m; errEl.classList.add('show'); };
+const clearErr = () => { errEl.classList.remove('show'); errEl.textContent = ''; };
+
+submitBtn.addEventListener('click', async () => {
+clearErr();
+const fname = document.getElementById('fname');
+const email = document.getElementById('email');
+const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+if(!fname.value.trim() || !emailOk){
+[fname, email].forEach(f => {
+const bad = (f === email) ? !emailOk : !f.value.trim();
+if(bad){ f.style.borderColor = '#e8432f'; setTimeout(() => { f.style.borderColor = ''; }, 2000); }
+});
+return;
+}
+const interests = [...document.querySelectorAll('.opt input:checked')].map(c => c.value).join(', ');
+const payload = {
+access_key: ACCESS_KEY,
+subject: "Playing Outside x Practise Hours — Interest Registration",
+from_name: "Practise Hours x Playing Outside — Register Interest",
+name: (fname.value.trim() + ' ' + document.getElementById('lname').value.trim()).trim(),
+email: email.value.trim(),
+instagram: document.getElementById('instagram').value.trim() || '—',
+interested_in: interests || '—',
+botcheck: document.getElementById('botcheck').checked
+};
+const orig = submitBtn.textContent;
+submitBtn.disabled = true; submitBtn.textContent = 'Sending…';
+try{
+const res = await fetch('https://api.web3forms.com/submit', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+body: JSON.stringify(payload)
+});
+const data = await res.json();
+if(data.success){
+document.getElementById('contactForm').style.display = 'none';
+document.getElementById('formSuccess').classList.add('show');
+} else {
+showErr("Something went wrong sending that; please try again.");
+submitBtn.disabled = false; submitBtn.textContent = orig;
+}
+} catch(e){
+showErr("Network error; please try again.");
+submitBtn.disabled = false; submitBtn.textContent = orig;
+}
+});
+</script>
+</body>
+</html>
