@@ -120,6 +120,7 @@ background:var(--ink);color:#fff;padding:12px 20px;border:2px solid var(--ink);
 
 .flyer-grid{max-width:1080px;margin:0 auto;padding:0 44px 12px;display:grid;grid-template-columns:repeat(3,1fr);gap:38px}
 .flyer{position:relative;cursor:pointer;background:none;border:none;padding:0;font:inherit;color:inherit;text-align:left}
+.flyer:disabled{cursor:default}
 .flyer-card{
 position:relative;background:var(--paper);border:2.5px solid var(--ink);
 clip-path:polygon(0% 2%,3% 0%,97% 1%,100% 3%,99% 97%,96% 100%,4% 99%,1% 96%);
@@ -131,16 +132,21 @@ animation:flyerDrop .55s cubic-bezier(.34,1.56,.64,1) both;
 .flyer:nth-child(1) .flyer-card{--r:-2deg;animation-delay:0s}
 .flyer:nth-child(2) .flyer-card{--r:1.5deg;animation-delay:.08s}
 .flyer:nth-child(3) .flyer-card{--r:-1deg;animation-delay:.16s}
+.flyer:nth-child(4) .flyer-card{--r:2deg;animation-delay:.24s}
+.flyer:nth-child(5) .flyer-card{--r:-1.5deg;animation-delay:.32s}
 .flyer:hover .flyer-card{transform:rotate(0deg) translateY(-6px);box-shadow:10px 10px 0 var(--cobalt)}
 .flyer-staple{position:absolute;top:-9px;left:50%;transform:translateX(-50%) rotate(-3deg);width:26px;height:9px;background:var(--ink);border-radius:1px;z-index:4}
 .flyer-photo{aspect-ratio:1;overflow:hidden;background:var(--ink);border-bottom:2.5px solid var(--ink);position:relative}
 .flyer-photo img{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.05) saturate(.95)}
 .flyer-photo .num{position:absolute;bottom:8px;right:8px;font-family:'Space Mono',monospace;font-size:10px;background:var(--ink);color:var(--paper);padding:3px 7px;letter-spacing:.05em}
+.flyer-photo.empty{display:flex;align-items:center;justify-content:center;background:var(--cobalt)}
+.flyer-photo.empty .ph-txt{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#fff;text-align:center;line-height:1.6}
 .flyer-body{padding:16px 18px 0}
 .flyer-title{font-family:'Bagel Fat One',cursive;font-size:26px;color:var(--ink);line-height:1}
 .flyer-meta{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);opacity:.6;margin-top:8px}
 .flyer-open{display:inline-block;margin-top:12px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;background:var(--cobalt);color:#fff;padding:6px 12px;opacity:0;transform:translateY(4px);transition:opacity .25s,transform .25s}
 .flyer:hover .flyer-open{opacity:1;transform:translateY(0)}
+.flyer:disabled .flyer-open{background:var(--ink);opacity:.75;transform:none}
 
 .board-props{max-width:1080px;margin:56px auto 70px;padding:0 44px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:30px}
 .stamp{width:140px;height:140px;border:3px dashed var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;transform:rotate(-8deg);flex-shrink:0}
@@ -162,6 +168,7 @@ animation:flyerDrop .55s cubic-bezier(.34,1.56,.64,1) both;
 .session-title .sx-meta{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:#fff;opacity:.85;margin-top:7px}
 
 .wall-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:44px 26px}
+.wall-empty{grid-column:1/-1;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);opacity:.55;padding:20px 0}
 .wall-pol{position:relative;cursor:pointer;animation:flyerDrop .5s cubic-bezier(.34,1.56,.64,1) both}
 .wall-pol .flyer-card2{
 position:relative;background:var(--paper);border:2.5px solid var(--ink);
@@ -321,10 +328,8 @@ footer{padding:22px 20px;flex-direction:column;align-items:flex-start}
 
 <div class="marquee">
 <div class="marquee-track">
-<span>NO BRIEF</span><span class="accent">NO CLIENT</span><span>JUST PRACTICE</span>
-<span>PLAYING OUTSIDE X PRACTISE HOURS — 25 JULY</span><span class="accent">NO BRIEF</span><span>NO CLIENT</span>
-<span>JUST PRACTICE</span><span>NEXT SESSION 23 JULY — LONDON</span><span class="accent">NO BRIEF</span>
-<span>NO CLIENT</span><span>JUST PRACTICE</span><span>PLAYING OUTSIDE X PRACTISE HOURS — 25 JULY</span>
+<span>NO BRIEF</span><span class="accent">NO CLIENT</span><span>JUST PRACTICE</span><span>THE ARCHIVE · VOL. 01</span><span class="accent">05 SESSIONS</span><span>LONDON</span>
+<span>NO BRIEF</span><span class="accent">NO CLIENT</span><span>JUST PRACTICE</span><span>THE ARCHIVE · VOL. 01</span><span class="accent">05 SESSIONS</span><span>LONDON</span>
 </div>
 </div>
 
@@ -340,45 +345,22 @@ footer{padding:22px 20px;flex-direction:column;align-items:flex-start}
 <h1>PRACTISE<br><span class="line2">HOURS.</span></h1>
 <p class="hero-sub">An open studio session for models, photographers, filmmakers and stylists. No brief. No client. Just practice.</p>
 <div class="hero-tags">
-<span class="hero-tag">04 sessions held</span>
-<span class="hero-tag inv">01 coming up</span>
+<span class="hero-tag">05 sessions held</span>
+<span class="hero-tag inv">vol. 01</span>
 <span class="hero-tag">london</span>
 </div>
 </div>
 </section>
-
-<a href="https://drive.google.com/drive/folders/1p-Cn3wrfY6_Wc1G9aWfM-hU20ESV68SX" target="_blank" rel="noopener" class="next-banner">
-<div class="next-banner-left">
-<span class="next-banner-tag">Playing Outside x MarkMakerz</span>
-<span class="next-banner-title">Thank you for coming — 25.07.26</span>
-<span class="next-banner-sub">Photos are now available for download</span>
-</div>
-<span class="next-banner-btn">Get Your Photos →</span>
-</a>
 
 <div class="section-head">
 <h2>Pinned to the wall.</h2>
 <p>tap a flyer to open the set</p>
 </div>
 
-<div class="flyer-grid" id="flyerGrid">
-<a href="https://drive.google.com/drive/folders/1p-Cn3wrfY6_Wc1G9aWfM-hU20ESV68SX" target="_blank" rel="noopener" class="flyer" aria-label="Open Session 1.4 photos on Google Drive">
-<div class="flyer-card" style="--r:-2deg">
-<div class="flyer-staple"></div>
-<div class="flyer-photo" style="display:flex;align-items:center;justify-content:center;background:var(--cobalt)">
-<img src="data:image/png;base64,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" alt="Scan for Session 1.4 photos" style="width:64%;height:64%;object-fit:contain;border-radius:10px;border:3px solid var(--ink);background:var(--paper)">
-</div>
-<div class="flyer-body">
-<div class="flyer-title">1.4</div>
-<div class="flyer-meta">Playing Outside x MarkMakerz &middot; 25 Jul 2026</div>
-<span class="flyer-open" style="opacity:1;transform:none;background:var(--ink)">Open Google Drive &rarr;</span>
-</div>
-</div>
-</a>
-</div>
+<div class="flyer-grid" id="flyerGrid"></div>
 
 <div class="board-props">
-<div class="stamp"><span>Next Session<br>1.4 · 23 Jul<br>London</span></div>
+<div class="stamp"><span>Vol. 01<br>05 Sessions<br>London</span></div>
 <div class="handles-chip">
 <div class="ht-label">Documented by</div>
 <div class="ht-list">
@@ -416,8 +398,8 @@ footer{padding:22px 20px;flex-direction:column;align-items:flex-start}
 </div>
 <div class="about-side">
 <div class="stat-grid">
-<div class="stat-card"><div class="sc-n">04</div><div class="sc-l">Sessions Held</div></div>
-<div class="stat-card"><div class="sc-n">01</div><div class="sc-l">Coming Up</div></div>
+<div class="stat-card"><div class="sc-n">05</div><div class="sc-l">Sessions Held</div></div>
+<div class="stat-card"><div class="sc-n">01</div><div class="sc-l">Volume</div></div>
 <div class="stat-card"><div class="sc-n">03</div><div class="sc-l">Disciplines</div></div>
 <div class="stat-card"><div class="sc-n">2026</div><div class="sc-l">Since</div></div>
 </div>
@@ -441,13 +423,8 @@ footer{padding:22px 20px;flex-direction:column;align-items:flex-start}
 <div class="gl-tab">Take Part</div>
 <h1>Get<br><em>involved.</em></h1>
 <p>Want to take part in a future session? We're always looking for people to make work with. Tell us who you are and what you do.</p>
-<a href="/register-interest.html" target="_blank" rel="noopener" class="po-callout">
-<span class="po-callout-tag">Playing Outside x MarkMakerz</span>
-<span class="po-callout-title">Register your interest →</span>
-<span class="po-callout-sub">25 July · Proposition Studios · 2–6pm</span>
-</a>
 <div class="next-stamp">
-<span>Session 1.4<br>23 Jul · London<span class="next-cd" id="countdown">—</span></span>
+<span>No Brief<br>No Client<br>Just Practice</span>
 </div>
 </div>
 
@@ -625,38 +602,62 @@ imgs: [
 'https://lh3.googleusercontent.com/d/1mbOK_uIIj--H7vAzqxjMKymWbr5LRBoM',
 'https://lh3.googleusercontent.com/d/1IG69KSYfw3wC3ntVT4nquaBLpT-vb16y'
 ]
+},
+c4: {
+title: '1.4',
+meta: 'Playing Outside x MarkMakerz · 25 Jul 2026',
+capLabel: 'Practise Hours 1.4',
+imgs: [
+// ▼▼▼ SESSION 1.4 — paste Google Drive image links here (one per line, each in quotes, comma-separated) ▼▼▼
+
+// ▲▲▲ SESSION 1.4 ▲▲▲
+]
+},
+c5: {
+title: '1.5',
+meta: 'Fifth Edition · 2026',
+capLabel: 'Practise Hours 1.5',
+imgs: [
+// ▼▼▼ SESSION 1.5 — paste Google Drive image links here (one per line, each in quotes, comma-separated) ▼▼▼
+
+// ▲▲▲ SESSION 1.5 ▲▲▲
+]
 }
 };
-const FRAME_COUNTS = { c1: 18, c2: 27, c3: 26 };
 
-// ── BUILD BOARD FLYER GRID ──
+// ── BUILD BOARD FLYER GRID (newest first) ──
 (function buildFlyerGrid(){
 const grid = document.getElementById('flyerGrid');
-Object.keys(COLS).forEach(id => {
+[...Object.keys(COLS)].reverse().forEach(id => {
 const c = COLS[id];
+const hasImgs = c.imgs.length > 0;
 const btn = document.createElement('button');
 btn.className = 'flyer';
-btn.setAttribute('aria-label', 'Open ' + c.capLabel);
+btn.setAttribute('aria-label', hasImgs ? ('Open ' + c.capLabel) : (c.capLabel + ' — photos coming soon'));
+const photo = hasImgs
+? `<div class="flyer-photo">
+<img src="${c.imgs[0]}" alt="${c.capLabel}" loading="lazy">
+<span class="num">${c.imgs.length} FR</span>
+</div>`
+: `<div class="flyer-photo empty"><span class="ph-txt">Photos<br>incoming</span></div>`;
 btn.innerHTML = `
 <div class="flyer-card">
 <div class="flyer-staple"></div>
-<div class="flyer-photo">
-<img src="${c.imgs[0]}" alt="${c.capLabel}" loading="lazy">
-<span class="num">${FRAME_COUNTS[id]} FR</span>
-</div>
+${photo}
 <div class="flyer-body">
 <div class="flyer-title">${c.title}</div>
 <div class="flyer-meta">${c.meta}</div>
-<span class="flyer-open">Open the set →</span>
+<span class="flyer-open">${hasImgs ? 'Open the set →' : 'Coming soon'}</span>
 </div>
 </div>`;
+if(hasImgs){
 btn.addEventListener('click', () => { location.hash = '#/gallery/' + id; });
+} else {
+btn.disabled = true;
+}
 grid.appendChild(btn);
 });
 })();
-
-const PINS = ['', 'brass', 'blue', 'violet'];
-const ROTS = [-4,3,-7,5,-2,8,-5,2,-8,4,-3,6,-5,3,7,-4,2,-6,5,-3,4,-7,3,-5,6,-2,8];
 
 // ── ROUTER ──
 const PAGES = ['gallery','about','getinvolved'];
@@ -692,6 +693,9 @@ document.getElementById('sxName').textContent = c.title;
 document.getElementById('sxMeta').textContent = c.meta;
 const g = document.getElementById('wallGrid');
 g.innerHTML = '';
+if(!c.imgs.length){
+g.innerHTML = '<div class="wall-empty">Photos coming soon.</div>';
+} else {
 c.imgs.forEach((src, i) => {
 const num = String(i+1).padStart(2,'0');
 const d = document.createElement('div');
@@ -705,6 +709,7 @@ d.innerHTML =
 d.addEventListener('click', () => openLightbox(id, i));
 g.appendChild(d);
 });
+}
 document.getElementById('gvBoard').classList.add('hide');
 document.getElementById('gvSession').classList.add('show');
 }
@@ -747,19 +752,6 @@ if(e.key === 'ArrowLeft') lbStep(-1);
 if(e.key === 'ArrowRight') lbStep(1);
 }
 });
-
-// ── COUNTDOWN ──
-(function(){
-const el = document.getElementById('countdown');
-const target = new Date('2026-07-23T18:00:00');
-function update(){
-const diff = target - new Date();
-if(diff <= 0){ el.textContent = 'Happening now'; return; }
-const d = Math.floor(diff/864e5), h = Math.floor((diff%864e5)/36e5), m = Math.floor((diff%36e5)/6e4);
-el.textContent = `${d}d ${h}h ${m}m to go`;
-}
-update(); setInterval(update, 60000);
-})();
 
 // ── FORM → emails to studio@practisehours.com via Web3Forms ──
 const ACCESS_KEY = "190ace1c-0ccb-4f75-a0ea-4c67a6e0c865";
