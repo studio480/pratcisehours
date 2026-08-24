@@ -169,6 +169,8 @@ animation:flyerDrop .55s cubic-bezier(.34,1.56,.64,1) both;
 
 .wall-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:44px 26px}
 .wall-empty{grid-column:1/-1;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);opacity:.55;padding:20px 0}
+.wall-credit{display:block;margin-top:3px;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);opacity:.5;text-decoration:none}
+.wall-credit:hover{opacity:1;color:var(--cobalt)}
 .wall-pol{position:relative;cursor:pointer;animation:flyerDrop .5s cubic-bezier(.34,1.56,.64,1) both}
 .wall-pol .flyer-card2{
 position:relative;background:var(--paper);border:2.5px solid var(--ink);
@@ -195,6 +197,10 @@ padding:0 0 14px;box-shadow:5px 5px 0 var(--ink);transition:transform .3s ease,b
 .lb-prev{left:-58px}
 .lb-next{right:-58px}
 .lb-counter{position:absolute;bottom:-32px;left:50%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--paper)}
+.lb-credit{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;text-align:center;padding-top:6px}
+.lb-credit a{color:var(--cobalt-d);text-decoration:none;border-bottom:1px solid var(--cobalt-d)}
+.lb-credit a:hover{color:var(--ink);border-color:var(--ink)}
+.lb-credit:empty{display:none}
 
 /* ═══════════ ABOUT ═══════════ */
 .about-page{padding:56px 44px 60px;max-width:1040px;margin:0 auto}
@@ -503,6 +509,7 @@ footer{padding:22px 20px;flex-direction:column;align-items:flex-start}
 <div class="lb-pol">
 <img id="lbImg" src="" alt="">
 <div class="lb-cap" id="lbCap"></div>
+<div class="lb-credit" id="lbCredit"></div>
 </div>
 <div class="lb-counter" id="lbCounter"></div>
 </div>
@@ -628,6 +635,11 @@ c5: {
 title: '1.5',
 meta: 'H5 Lab · 24 frames · 2026',
 capLabel: 'Practise Hours 1.5',
+credits: [
+{ handle: 'hmk_il', range: [1, 7] },
+{ handle: 'dabibido.photos', range: [8, 13] },
+{ handle: 'hadellle', range: [14, 24] }
+],
 imgs: [
 'https://lh3.googleusercontent.com/d/1l6uul7PydQRaPfKakWGshGTcu9sQccwL',
 'https://lh3.googleusercontent.com/d/1-KbqvQjbK7AnmcllxXlb2qdEf55mQhgv',
@@ -656,6 +668,14 @@ imgs: [
 ]
 }
 };
+
+// ── PHOTOGRAPHER CREDIT LOOKUP (1-based image ranges) ──
+function creditFor(c, idx){
+if(!c.credits) return null;
+const n = idx + 1;
+const hit = c.credits.find(cr => n >= cr.range[0] && n <= cr.range[1]);
+return hit ? hit.handle : null;
+}
 
 // ── BUILD BOARD FLYER GRID (newest first) ──
 (function buildFlyerGrid(){
@@ -730,13 +750,15 @@ g.innerHTML = '<div class="wall-empty">Photos coming soon.</div>';
 } else {
 c.imgs.forEach((src, i) => {
 const num = String(i+1).padStart(2,'0');
+const whoWall = creditFor(c, i);
+const creditHtml = whoWall ? `<a class="wall-credit" href="https://www.instagram.com/${whoWall}/" target="_blank" rel="noopener" onclick="event.stopPropagation()">by @${whoWall}</a>` : '';
 const d = document.createElement('div');
 d.className = 'wall-pol';
 d.style.cssText = `animation-delay:${i*0.035}s`;
 d.innerHTML =
 `<div class="flyer-card2">
 <div class="flyer-photo"><img src="${src}" alt="${c.capLabel} — ${num}" loading="lazy"></div>
-<div class="flyer-body"><div class="flyer-meta">${c.capLabel} · ${num}</div></div>
+<div class="flyer-body"><div class="flyer-meta">${c.capLabel} · ${num}</div>${creditHtml}</div>
 </div>`;
 d.addEventListener('click', () => openLightbox(id, i));
 g.appendChild(d);
@@ -763,6 +785,8 @@ img.onload = () => { img.style.transition = 'opacity .25s'; img.style.opacity = 
 const num = String(lbIndex+1).padStart(2,'0');
 document.getElementById('lbCap').textContent = `${c.capLabel} · ${num}`;
 document.getElementById('lbCounter').textContent = `${num} / ${String(c.imgs.length).padStart(2,'0')}`;
+const whoLb = creditFor(c, lbIndex);
+document.getElementById('lbCredit').innerHTML = whoLb ? `by <a href="https://www.instagram.com/${whoLb}/" target="_blank" rel="noopener">@${whoLb}</a>` : '';
 }
 function lbStep(dir){
 if(!lbColId) return;
