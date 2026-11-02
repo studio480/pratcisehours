@@ -37,14 +37,14 @@ alter table public.activity enable row level security;
 drop policy if exists "team only" on public.items;
 create policy "team only" on public.items
   for all to authenticated
-  using      ((auth.jwt() ->> 'email') = 'team@practisehours.com')
-  with check ((auth.jwt() ->> 'email') = 'team@practisehours.com');
+  using      ((auth.jwt() ->> 'email') = 'studio@indiebycinema.com')
+  with check ((auth.jwt() ->> 'email') = 'studio@indiebycinema.com');
 
 drop policy if exists "team only" on public.activity;
 create policy "team only" on public.activity
   for all to authenticated
-  using      ((auth.jwt() ->> 'email') = 'team@practisehours.com')
-  with check ((auth.jwt() ->> 'email') = 'team@practisehours.com');
+  using      ((auth.jwt() ->> 'email') = 'studio@indiebycinema.com')
+  with check ((auth.jwt() ->> 'email') = 'studio@indiebycinema.com');
 
 -- Live updates: push changes to everyone who has the page open
 alter publication supabase_realtime add table public.items;
