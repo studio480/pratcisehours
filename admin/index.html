@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>PH Studio Room</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--ink:#0e0e12;--paper:#faf8f1;--paper-2:#f1eee1;--cobalt:#3d3ff2;--cobalt-d:#2523c4;--red:#e8432f;--yellow:#f5d928;
+--line:2.5px;
+}
+html,body{background:var(--paper);color:var(--ink);font-family:'Space Grotesk',sans-serif;min-height:100%}
+body{overflow-x:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:var(--ink)}
+a{color:var(--cobalt-d)}
+.mono{font-family:'Space Mono',monospace}
+.halftone{background-image:radial-gradient(rgba(255,255,255,.16) 1.4px,transparent 1.6px);background-size:13px 13px}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+
+/* ── GATE (login + who) ── */
+[hidden]{display:none!important}
+.gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px;background:var(--cobalt)}
+.gate-card{width:min(440px,100%);background:var(--paper);border:3px solid var(--ink);box-shadow:10px 10px 0 var(--ink);padding:36px 30px 32px;transform:rotate(-.6deg)}
+.gate-card .tag{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:6px 12px;margin-bottom:18px;transform:rotate(-2deg)}
+.gate-card h1{font-family:'Bagel Fat One',cursive;font-size:44px;line-height:.92;margin-bottom:10px}
+.gate-card h1 em{font-style:normal;color:var(--cobalt)}
+.gate-card p{font-size:15px;line-height:1.6;opacity:.75;margin-bottom:22px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;opacity:.6}
+.field input,.field select,.field textarea{background:var(--paper-2);border:2px solid var(--ink);padding:11px 12px;font-size:15px;width:100%;border-radius:0}
+.field textarea{min-height:110px;resize:vertical;line-height:1.55}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--cobalt);background:#fff}
+.checks{display:flex;flex-wrap:wrap;gap:8px}
+.check{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--ink);padding:8px 12px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;background:var(--paper)}
+.check input{accent-color:var(--cobalt);width:16px;height:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:var(--ink);color:var(--paper);border:2.5px solid var(--ink);padding:13px 20px;box-shadow:4px 4px 0 var(--cobalt);transition:transform .08s,box-shadow .08s,background .15s}
+.btn:hover{background:var(--cobalt)}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--cobalt)}
+.btn.ghost{background:var(--paper);color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.btn.ghost:hover{background:var(--paper-2)}
+.btn.danger{background:var(--red);border-color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.btn.small{padding:9px 13px;font-size:10px}
+.btn.block{width:100%}
+.err{font-family:'Space Mono',monospace;font-size:11px;color:var(--red);margin-top:10px;min-height:1em;line-height:1.5}
+.who-grid{display:grid;gap:12px;margin-top:6px}
+.who-btn{display:flex;align-items:center;gap:14px;background:var(--paper);border:2.5px solid var(--ink);padding:14px 16px;box-shadow:4px 4px 0 var(--ink);text-align:left;transition:transform .1s,box-shadow .1s}
+.who-btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--cobalt)}
+.who-btn .nm{font-family:'Bagel Fat One',cursive;font-size:24px}
+.av{width:38px;height:38px;border-radius:50%;border:2.5px solid var(--ink);display:inline-flex;align-items:center;justify-content:center;font-family:'Bagel Fat One',cursive;font-size:17px;flex-shrink:0}
+.av.sm{width:24px;height:24px;font-size:11px;border-width:2px}
+.av-Abdullah{background:var(--cobalt);color:#fff}
+.av-Marcus{background:var(--red);color:#fff}
+.av-Fatih{background:var(--yellow);color:var(--ink)}
+
+/* ── APP SHELL ── */
+.app{display:none}
+.app.on{display:block}
+.top{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:3px solid var(--ink)}
+.top-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 28px}
+.logo{font-family:'Bagel Fat One',cursive;font-size:22px;text-decoration:none;color:var(--ink);white-space:nowrap}
+.logo em{font-style:normal;color:var(--cobalt)}
+.logo small{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:4px 8px;margin-left:8px;vertical-align:middle}
+.me{display:flex;align-items:center;gap:10px}
+.me-chip{display:flex;align-items:center;gap:8px;border:2px solid var(--ink);padding:5px 12px 5px 5px;background:var(--paper);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.me-chip:hover{background:var(--paper-2)}
+.tabs{display:flex;overflow-x:auto;border-top:2px solid var(--ink);background:var(--ink);scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;background:var(--paper);border:none;border-right:2px solid var(--ink);padding:12px 18px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.tab:hover{background:var(--paper-2)}
+.tab.on{background:var(--cobalt);color:#fff}
+.demo-bar{background:var(--yellow);border-bottom:2.5px solid var(--ink);padding:9px 28px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.04em;line-height:1.5}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:0;min-height:calc(100vh - 110px)}
+main{padding:32px 28px 80px;min-width:0}
+.rail{border-left:3px solid var(--ink);background:var(--paper-2);padding:24px 20px;position:sticky;top:110px;height:calc(100vh - 110px);overflow-y:auto}
+.rail h3{font-family:'Bagel Fat One',cursive;font-size:22px;margin-bottom:4px}
+.rail .sub{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.55;margin-bottom:18px;display:flex;align-items:center;gap:6px}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;animation:blink 1.4s steps(1) infinite}
+@keyframes blink{50%{opacity:.2}}
+.act{display:flex;gap:10px;padding:10px 0;border-bottom:1.5px dashed rgba(14,14,18,.25);font-size:13.5px;line-height:1.45}
+.act b{font-weight:700}
+.act q{quotes:none;font-weight:600}
+.act .when{display:block;font-family:'Space Mono',monospace;font-size:10px;opacity:.5;margin-top:2px;letter-spacing:.04em}
+.empty-note{font-family:'Space Mono',monospace;font-size:11px;opacity:.55;line-height:1.6;padding:8px 0}
+
+.view{display:none}
+.view.on{display:block;animation:in .3s ease both}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.vhead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+.vhead h1{font-family:'Bagel Fat One',cursive;font-size:clamp(34px,5vw,52px);line-height:.95}
+.vhead p{font-size:14.5px;opacity:.7;margin-top:8px;max-width:520px;line-height:1.55}
+.byline{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.04em;opacity:.6;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+
+/* Board */
+.pins{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:30px 24px;padding-top:8px}
+.pin{position:relative;border:2.5px solid var(--ink);padding:22px 18px 14px;box-shadow:6px 6px 0 var(--ink);background:var(--paper);text-align:left;width:100%;transition:transform .2s,box-shadow .2s}
+.pin:nth-child(4n+1){transform:rotate(-1.6deg)}.pin:nth-child(4n+2){transform:rotate(1.2deg)}.pin:nth-child(4n+3){transform:rotate(-.6deg)}.pin:nth-child(4n){transform:rotate(1.8deg)}
+.pin:hover{transform:rotate(0) translateY(-4px);box-shadow:8px 8px 0 var(--cobalt)}
+.pin::before{content:'';position:absolute;top:-11px;left:50%;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:var(--red);border:2.5px solid var(--ink)}
+.pin.c-Urgent{background:#ffd9d3}.pin.c-Idea{background:#fbf0a8}.pin.c-Shoutout{background:#d6d7ff}
+.pin .cat{display:inline-block;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;border:2px solid var(--ink);padding:3px 8px;margin-bottom:10px;background:var(--paper)}
+.pin .ttl{font-family:'Bagel Fat One',cursive;font-size:21px;line-height:1.08;margin-bottom:8px}
+.pin .bd{font-size:14px;line-height:1.55;white-space:pre-wrap;margin-bottom:12px;opacity:.85}
+.pin .star{position:absolute;top:10px;right:12px;font-size:16px}
+
+/* Calendar */
+.cal-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cal-bar .month{font-family:'Bagel Fat One',cursive;font-size:26px;min-width:210px}
+.cal{border:3px solid var(--ink);box-shadow:8px 8px 0 var(--ink);background:var(--paper);margin-top:18px}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);background:var(--ink);color:var(--paper)}
+.cal-dow div{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;padding:9px 8px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.day{min-height:112px;border-right:1.5px solid rgba(14,14,18,.25);border-bottom:1.5px solid rgba(14,14,18,.25);padding:6px;display:flex;flex-direction:column;gap:4px;cursor:pointer;background:var(--paper);text-align:left;border-top:none;border-left:none}
+.day:hover{background:var(--paper-2)}
+.day:nth-child(7n){border-right:none}
+.day.out{background:#efece2;opacity:.55}
+.day .n{font-family:'Space Mono',monospace;font-size:11px;font-weight:700}
+.day.today .n{background:var(--cobalt);color:#fff;padding:1px 6px;align-self:flex-start}
+.chip{display:block;width:100%;text-align:left;font-size:11.5px;line-height:1.25;padding:4px 6px;border:1.5px solid var(--ink);background:var(--paper);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip:hover{filter:brightness(.95)}
+.t-Session{background:var(--cobalt);color:#fff}.t-Shoot{background:var(--red);color:#fff}.t-Content{background:var(--yellow)}.t-Meeting{background:var(--ink);color:var(--paper)}.t-Deadline{background:#fff;border-style:dashed;border-color:var(--red);color:var(--red);font-weight:700}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.legend span{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px;border:1.5px solid var(--ink)}
+.upcoming{margin-top:40px}
+.upcoming h2,.sec-h{font-family:'Bagel Fat One',cursive;font-size:26px;margin-bottom:14px}
+.row{display:flex;align-items:center;gap:14px;border:2.5px solid var(--ink);background:var(--paper);padding:12px 14px;margin-bottom:10px;width:100%;text-align:left;box-shadow:4px 4px 0 var(--ink)}
+.row:hover{box-shadow:5px 5px 0 var(--cobalt)}
+.row .date{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;text-transform:uppercase;min-width:92px}
+.row .main{flex:1;min-width:0}
+.row .main b{font-size:15.5px;display:block;margin-bottom:2px}
+
+/* Cards (brand) */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
+.card{border:2.5px solid var(--ink);background:var(--paper);box-shadow:6px 6px 0 var(--ink);padding:20px 20px 16px;text-align:left;width:100%;display:flex;flex-direction:column;gap:10px}
+.card:hover{box-shadow:7px 7px 0 var(--cobalt)}
+.card h3{font-family:'Bagel Fat One',cursive;font-size:23px;line-height:1.05}
+.card .bd{font-size:14.5px;line-height:1.65;white-space:pre-wrap;opacity:.85;flex:1}
+.card .lnk{font-family:'Space Mono',monospace;font-size:11px;word-break:break-all}
+
+/* Kanban */
+.kanban{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(168px,1fr);gap:14px;overflow-x:auto;padding:0 8px 16px 0}
+.col{background:var(--paper-2);border:2.5px solid var(--ink);display:flex;flex-direction:column;min-height:300px}
+.col-h{display:flex;justify-content:space-between;align-items:center;background:var(--ink);color:var(--paper);padding:10px 12px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.col-b{padding:12px;display:flex;flex-direction:column;gap:12px;flex:1}
+.kc{border:2px solid var(--ink);background:var(--paper);padding:12px;box-shadow:3px 3px 0 var(--ink)}
+.kc .ttl{font-weight:700;font-size:15px;line-height:1.3;margin-bottom:6px;cursor:pointer}
+.kc .ttl:hover{color:var(--cobalt)}
+.kc .meta{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;opacity:.65;margin-bottom:8px}
+.kc .mv{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:8px}
+.mvb{border:2px solid var(--ink);background:var(--paper);width:28px;height:28px;font-family:'Space Mono',monospace;font-size:12px}
+.mvb:hover{background:var(--yellow)}
+.mvb:disabled{opacity:.25;cursor:default;background:var(--paper)}
+.pills{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}
+.pill{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;border:1.5px solid var(--ink);padding:3px 6px;background:var(--paper)}
+.pill.ok{background:var(--cobalt);color:#fff}
+
+/* Tasks */
+.task{display:flex;align-items:center;gap:14px;border:2.5px solid var(--ink);background:var(--paper);padding:12px 14px;margin-bottom:10px;box-shadow:4px 4px 0 var(--ink)}
+.task.done{opacity:.55}
+.task.done .tt{text-decoration:line-through}
+.tick{width:26px;height:26px;border:2.5px solid var(--ink);background:var(--paper);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700}
+.task.done .tick{background:var(--cobalt);color:#fff}
+.task .main{flex:1;min-width:0;cursor:pointer}
+.task .tt{font-weight:700;font-size:15.5px;display:block}
+.due{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase}
+.due.late{color:var(--red);font-weight:700}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.fb{border:2px solid var(--ink);background:var(--paper);padding:7px 12px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+.fb.on{background:var(--ink);color:var(--paper)}
+
+/* Modal */
+dialog{border:3px solid var(--ink);box-shadow:10px 10px 0 var(--ink);background:var(--paper);padding:0;width:min(560px,calc(100vw - 32px));max-height:calc(100vh - 40px)}
+dialog::backdrop{background:rgba(14,14,18,.6)}
+.m-head{display:flex;justify-content:space-between;align-items:center;background:var(--cobalt);color:#fff;padding:14px 20px;border-bottom:3px solid var(--ink)}
+.m-head h2{font-family:'Bagel Fat One',cursive;font-size:24px}
+.m-x{background:none;border:2px solid #fff;color:#fff;width:32px;height:32px;font-size:16px}
+.m-body{padding:22px 20px 8px;overflow-y:auto;max-height:calc(100vh - 220px)}
+.m-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 20px 20px;flex-wrap:wrap}
+.m-foot .right{display:flex;gap:10px;margin-left:auto}
+.m-meta{font-family:'Space Mono',monospace;font-size:10px;opacity:.55;padding:0 20px 4px;letter-spacing:.04em}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--ink);color:var(--paper);font-family:'Space Mono',monospace;font-size:12px;padding:12px 18px;border:2.5px solid var(--ink);box-shadow:4px 4px 0 var(--cobalt);transition:transform .25s;z-index:200;max-width:calc(100vw - 32px)}
+.toast.on{transform:translateX(-50%) translateY(0)}
+
+@media(max-width:980px){
+.layout{grid-template-columns:1fr}
+.rail{position:static;height:auto;border-left:none;border-top:3px solid var(--ink)}
+}
+@media(max-width:640px){
+.top-row{padding:12px 16px}
+.logo small{display:none}
+main{padding:24px 16px 60px}
+.demo-bar{padding:9px 16px}
+.cal-dow div{padding:7px 3px;font-size:9px;letter-spacing:.04em}
+.day{min-height:64px;padding:4px}
+.chip{font-size:0;padding:0;height:8px;border-width:1px}
+.two{grid-template-columns:1fr}
+.me-chip .nm{display:none}
+.row .date{min-width:70px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ═══ GATE: PASSWORD ═══ -->
+<section class="gate halftone" id="gateLogin" hidden>
+  <div class="gate-card">
+    <span class="tag">Team only</span>
+    <h1>Studio <em>Room.</em></h1>
+    <p>The Practise Hours back office. Enter the team password to come in.</p>
+    <form id="loginForm">
+      <div class="field"><label for="pw">Team password</label><input type="password" id="pw" autocomplete="current-password" required></div>
+      <button class="btn block" type="submit">Come in &rarr;</button>
+      <div class="err" id="loginErr"></div>
+    </form>
+  </div>
+</section>
+
+<!-- ═══ GATE: NOT CONNECTED ═══ -->
+<section class="gate halftone" id="gateSetup" hidden>
+  <div class="gate-card">
+    <span class="tag">Not connected yet</span>
+    <h1>Studio <em>Room.</em></h1>
+    <p>This page isn't linked to its database yet. Add the Supabase details in the config at the bottom of <code>admin/index.html</code>.</p>
+  </div>
+</section>
+
+<!-- ═══ GATE: WHO ═══ -->
+<section class="gate halftone" id="gateWho" hidden>
+  <div class="gate-card">
+    <span class="tag">Who's in?</span>
+    <h1>Pick <em>yourself.</em></h1>
+    <p>Everything you add or change gets your name on it.</p>
+    <div class="who-grid" id="whoGrid"></div>
+  </div>
+</section>
+
+<!-- ═══ APP ═══ -->
+<div class="app" id="app">
+  <header class="top">
+    <div class="top-row">
+      <a class="logo" href="#board">Practise Hours<em>.</em><small>Studio Room</small></a>
+      <div class="me">
+        <button class="me-chip" id="meChip" title="Switch user"><span class="av sm" id="meAv"></span><span class="nm" id="meName"></span><span aria-hidden="true">&#8644;</span></button>
+        <button class="btn ghost small" id="logoutBtn">Log out</button>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs"></nav>
+  </header>
+  <div class="demo-bar" id="demoBar" hidden>Demo mode: changes only save in this browser. Connect Supabase to share them with the team.</div>
+  <div class="layout">
+    <main id="main">
+      <section class="view" id="v-board"></section>
+      <section class="view" id="v-calendar"></section>
+      <section class="view" id="v-brand"></section>
+      <section class="view" id="v-content"></section>
+      <section class="view" id="v-partners"></section>
+      <section class="view" id="v-tasks"></section>
+    </main>
+    <aside class="rail" aria-label="Activity">
+      <h3>Activity</h3>
+      <div class="sub"><span class="live-dot"></span>Live &middot; who did what</div>
+      <div id="feed"></div>
+    </aside>
+  </div>
+</div>
+
+<dialog id="modal">
+  <form id="mForm" method="dialog">
+    <div class="m-head"><h2 id="mTitle"></h2><button type="button" class="m-x" id="mClose" aria-label="Close">&times;</button></div>
+    <div class="m-body" id="mBody"></div>
+    <div class="m-meta" id="mMeta"></div>
+    <div class="m-foot">
+      <button type="button" class="btn danger small" id="mDelete" hidden>Delete</button>
+      <div class="right"><button type="button" class="btn ghost small" id="mCancel">Cancel</button><button type="submit" class="btn small" id="mSave">Save</button></div>
+    </div>
+  </form>
+</dialog>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ═══════════════════════════════════════════════
+   CONFIG — fill these in from Supabase
+   (Project Settings → API). The anon key is safe
+   to publish: the database rules only let the
+   team login read or write anything.
+   ═══════════════════════════════════════════════ */
+const CONFIG = {
+  supabaseUrl: '',          // e.g. 'https://abcdxyz.supabase.co'
+  supabaseAnonKey: '',      // the long "anon public" key
+  teamEmail: 'team@practisehours.com'  // the one shared login you create in Supabase
+};
+const TEAM = ['Abdullah', 'Marcus', 'Fatih'];
+
+/* ── Section definitions ── */
+const KINDS = {
+  pin: { label: 'Pin', fields: [
+    { k: 'title', label: 'Headline', type: 'text', req: true },
+    { k: 'body', label: 'Details', type: 'textarea' },
+    { k: 'category', label: 'Type', type: 'select', options: ['Admin', 'Urgent', 'Idea', 'Shoutout'] },
+    { k: 'pinned', label: 'Keep at the top', type: 'check' }
+  ]},
+  event: { label: 'Event', fields: [
+    { k: 'title', label: 'What', type: 'text', req: true },
+    { k: 'type', label: 'Type', type: 'select', options: ['Session', 'Shoot', 'Content', 'Meeting', 'Deadline'] },
+    { row: [{ k: 'date', label: 'Date', type: 'date', req: true }, { k: 'time', label: 'Time', type: 'text', ph: 'e.g. 5–9pm' }] },
+    { k: 'location', label: 'Where', type: 'text' },
+    { k: 'body', label: 'Notes', type: 'textarea' }
+  ]},
+  brand: { label: 'Brand section', fields: [
+    { k: 'title', label: 'Section', type: 'text', req: true },
+    { k: 'body', label: 'Content', type: 'textarea', tall: true },
+    { k: 'link', label: 'Link (Figma, Drive, deck…)', type: 'url' }
+  ]},
+  content: { label: 'Content idea', fields: [
+    { k: 'title', label: 'Idea / post', type: 'text', req: true },
+    { row: [{ k: 'status', label: 'Stage', type: 'select', options: ['Idea', 'Shooting', 'Editing', 'Scheduled', 'Posted'] }, { k: 'platform', label: 'Platform', type: 'select', options: ['Instagram', 'TikTok', 'Website', 'Other'] }] },
+    { row: [{ k: 'date', label: 'Post date', type: 'date' }, { k: 'owner', label: 'Owner', type: 'select', options: ['', ...TEAM] }] },
+    { k: 'body', label: 'Notes, caption, links', type: 'textarea' }
+  ]},
+  partner: { label: 'Partner', fields: [
+    { k: 'title', label: 'Brand / venue', type: 'text', req: true },
+    { row: [{ k: 'status', label: 'Stage', type: 'select', options: ['Lead', 'Talking', 'Agreed', 'Done'] }, { k: 'owner', label: 'Point person', type: 'select', options: ['', ...TEAM] }] },
+    { k: 'contact', label: 'Contact (name, @, email)', type: 'text' },
+    { k: 'checks', label: 'Deal checklist', type: 'checks', options: ['Revenue line for PH', 'Co-billing', 'Image rights', 'Who fronts costs'] },
+    { k: 'body', label: 'Notes', type: 'textarea' }
+  ]},
+  task: { label: 'Task', fields: [
+    { k: 'title', label: 'Task', type: 'text', req: true },
+    { row: [{ k: 'owner', label: 'Owner', type: 'select', options: TEAM }, { k: 'date', label: 'Due', type: 'date' }] },
+    { k: 'body', label: 'Notes', type: 'textarea' }
+  ]}
+};
+const VIEWS = [
+  { id: 'board', label: 'Notice board' }, { id: 'calendar', label: 'Calendar' }, { id: 'brand', label: 'Brand strategy' },
+  { id: 'content', label: 'Content strategy' }, { id: 'partners', label: 'Partners' }, { id: 'tasks', label: 'Tasks' }
+];
+const STARTER_BRAND = [
+  ['Positioning', 'What PH is in one line, and who it is for.\n\nAn open studio for models, photographers, filmmakers and stylists. No brief. No client. Just practice.'],
+  ['Voice & tone', 'How we sound on posts, captions and DMs.\n\n— lowercase, casual, community-first\n— invite, never sell'],
+  ['Partner rules', 'Non-negotiables for every collab:\n— PH is an equal creative partner, never a vendor\n— revenue line for PH named up front\n— co-billing on all promo\n— image rights for our channels + the magazine\n— agree who fronts costs before anything is booked'],
+  ['Visual system', 'Cobalt, ink, paper, red, yellow. Bagel Fat One / Space Mono / Space Grotesk. Thick outlines, hard shadows, slight tilts.'],
+  ['Rate card', 'What we charge for photo booths, brand shoots and content packages.']
+];
+
+/* ── Helpers ── */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
+const store_get = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const store_set = (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} };
+const todayISO = () => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+function ago(ts) {
+  const s = Math.max(0, (Date.now() - new Date(ts).getTime()) / 1000);
+  if (s < 60) return 'just now';
+  if (s < 3600) return Math.floor(s / 60) + 'm ago';
+  if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+  if (s < 86400 * 7) return Math.floor(s / 86400) + 'd ago';
+  return new Date(ts).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+}
+const fmtDate = iso => iso ? new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) : '';
+const av = (name, sm) => name ? `<span class="av ${sm ? 'sm' : ''} av-${esc(name)}">${esc(name[0])}</span>` : '';
+function byline(it) {
+  const edited = it.updated_by && it.updated_at && it.updated_at !== it.created_at;
+  return `<span class="byline">${av(it.created_by, true)} by ${esc(it.created_by || '?')} &middot; ${ago(it.created_at)}${edited ? ` &middot; edited by ${esc(it.updated_by)}` : ''}</span>`;
+}
+let toastT;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2600); }
+
+/* ═══ DATA LAYER ═══ */
+const DEMO = !CONFIG.supabaseUrl && new URLSearchParams(location.search).has('demo');
+let sb = null;
+const state = { items: [], activity: [], me: null };
+
+const api = {
+  async load() {
+    if (DEMO) {
+      state.items = JSON.parse(store_get('ph-demo-items') || '[]');
+      state.activity = JSON.parse(store_get('ph-demo-activity') || '[]');
+      return;
+    }
+    const [a, b] = await Promise.all([
+      sb.from('items').select('*').order('created_at', { ascending: false }),
+      sb.from('activity').select('*').order('created_at', { ascending: false }).limit(60)
+    ]);
+    if (a.error) throw a.error; if (b.error) throw b.error;
+    state.items = a.data; state.activity = b.data;
+  },
+  saveDemo() { store_set('ph-demo-items', JSON.stringify(state.items)); store_set('ph-demo-activity', JSON.stringify(state.activity.slice(0, 60))); },
+  async log(action, it) {
+    const row = { id: uid(), who: state.me, action, kind: it.kind, title: it.title || '', created_at: new Date().toISOString() };
+    if (DEMO) { state.activity.unshift(row); api.saveDemo(); return; }
+    const { error } = await sb.from('activity').insert({ who: row.who, action, kind: row.kind, title: row.title });
+    if (error) console.warn(error);
+  },
+  async insert(kind, title, data) {
+    const now = new Date().toISOString();
+    const it = { id: uid(), kind, title, data, created_by: state.me, updated_by: state.me, created_at: now, updated_at: now };
+    if (DEMO) { state.items.unshift(it); api.saveDemo(); }
+    else { const { error } = await sb.from('items').insert({ id: it.id, kind, title, data, created_by: state.me, updated_by: state.me }); if (error) throw error; }
+    await api.log('added', it);
+    return it;
+  },
+  async update(it, title, data, action = 'edited') {
+    const now = new Date().toISOString();
+    if (DEMO) { Object.assign(it, { title, data, updated_by: state.me, updated_at: now }); api.saveDemo(); }
+    else { const { error } = await sb.from('items').update({ title, data, updated_by: state.me, updated_at: now }).eq('id', it.id); if (error) throw error; }
+    await api.log(action, { kind: it.kind, title });
+  },
+  async remove(it) {
+    if (DEMO) { state.items = state.items.filter(x => x.id !== it.id); api.saveDemo(); }
+    else { const { error } = await sb.from('items').delete().eq('id', it.id); if (error) throw error; }
+    await api.log('deleted', it);
+  }
+};
+async function refresh() {
+  try { await api.load(); } catch (e) { toast('Could not load: ' + (e.message || e)); }
+  renderAll();
+}
+async function act(fn, msg) {
+  try { await fn(); if (DEMO) renderAll(); else await refresh(); if (msg) toast(msg); }
+  catch (e) { toast('Not saved: ' + (e.message || e)); }
+}
+
+/* ═══ GATES ═══ */
+function show(id) { ['#gateLogin', '#gateSetup', '#gateWho'].forEach(g => $(g).hidden = g !== id); $('#app').classList.toggle('on', id === '#app'); }
+function pickWho() {
+  $('#whoGrid').innerHTML = TEAM.map(n => `<button class="who-btn" data-who="${n}">${av(n)}<span class="nm">${n}</span></button>`).join('');
+  show('#gateWho');
+}
+$('#whoGrid').addEventListener('click', e => {
+  const b = e.target.closest('[data-who]'); if (!b) return;
+  state.me = b.dataset.who; store_set('ph-admin-who', state.me); enterApp();
+});
+$('#meChip').addEventListener('click', pickWho);
+$('#loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  $('#loginErr').textContent = '';
+  const { error } = await sb.auth.signInWithPassword({ email: CONFIG.teamEmail, password: $('#pw').value });
+  if (error) { $('#loginErr').textContent = 'That password didn\'t work. Try again.'; return; }
+  $('#pw').value = '';
+  afterAuth();
+});
+$('#logoutBtn').addEventListener('click', async () => {
+  store_set('ph-admin-who', null); state.me = null;
+  if (DEMO) { pickWho(); return; }
+  await sb.auth.signOut(); show('#gateLogin');
+});
+function afterAuth() {
+  const saved = store_get('ph-admin-who');
+  if (saved && TEAM.includes(saved)) { state.me = saved; enterApp(); } else pickWho();
+}
+let entered = false;
+async function enterApp() {
+  $('#meAv').outerHTML = `<span class="av sm av-${state.me}" id="meAv">${state.me[0]}</span>`;
+  $('#meName').textContent = state.me;
+  show('#app');
+  if (!entered) {
+    entered = true;
+    $('#demoBar').hidden = !DEMO;
+    if (!DEMO) {
+      sb.channel('ph-admin')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'items' }, refresh)
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'activity' }, refresh)
+        .subscribe();
+    }
+    setInterval(renderAll, 60000);
+  }
+  await refresh();
+}
+
+/* ═══ NAV ═══ */
+$('#tabs').innerHTML = VIEWS.map(v => `<button class="tab" data-v="${v.id}">${v.label}</button>`).join('');
+$('#tabs').addEventListener('click', e => { const t = e.target.closest('[data-v]'); if (t) location.hash = t.dataset.v; });
+function currentView() { const h = location.hash.slice(1); return VIEWS.some(v => v.id === h) ? h : 'board'; }
+window.addEventListener('hashchange', () => { renderAll(); window.scrollTo(0, 0); });
+
+/* ═══ MODAL ═══ */
+let mCtx = null;
+function fieldHTML(f, data) {
+  if (f.row) return `<div class="two">${f.row.map(x => fieldHTML(x, data)).join('')}</div>`;
+  const v = data[f.k] ?? '';
+  const id = 'f_' + f.k;
+  if (f.type === 'textarea') return `<div class="field"><label for="${id}">${f.label}</label><textarea id="${id}" name="${f.k}" ${f.tall ? 'style="min-height:200px"' : ''}>${esc(v)}</textarea></div>`;
+  if (f.type === 'select') return `<div class="field"><label for="${id}">${f.label}</label><select id="${id}" name="${f.k}">${f.options.map(o => `<option value="${esc(o)}" ${o === v ? 'selected' : ''}>${o ? esc(o) : '—'}</option>`).join('')}</select></div>`;
+  if (f.type === 'check') return `<div class="field"><label class="check"><input type="checkbox" name="${f.k}" ${v ? 'checked' : ''}> ${f.label}</label></div>`;
+  if (f.type === 'checks') { const on = Array.isArray(v) ? v : []; return `<div class="field"><label>${f.label}</label><div class="checks">${f.options.map(o => `<label class="check"><input type="checkbox" name="${f.k}" value="${esc(o)}" ${on.includes(o) ? 'checked' : ''}> ${esc(o)}</label>`).join('')}</div></div>`; }
+  return `<div class="field"><label for="${id}">${f.label}</label><input id="${id}" name="${f.k}" type="${f.type}" value="${esc(v)}" ${f.req ? 'required' : ''} ${f.ph ? `placeholder="${esc(f.ph)}"` : ''}></div>`;
+}
+function openModal(kind, item, preset = {}) {
+  const K = KINDS[kind];
+  mCtx = { kind, item };
+  const data = item ? { title: item.title, ...item.data } : { ...preset };
+  $('#mTitle').textContent = (item ? 'Edit ' : 'New ') + K.label.toLowerCase();
+  $('#mBody').innerHTML = K.fields.map(f => fieldHTML(f, data)).join('');
+  $('#mMeta').innerHTML = item ? `Added by ${esc(item.created_by)} ${ago(item.created_at)}${item.updated_at !== item.created_at ? ` · last edited by ${esc(item.updated_by)} ${ago(item.updated_at)}` : ''}` : `Will be posted as ${esc(state.me)}`;
+  $('#mDelete').hidden = !item; $('#mDelete').textContent = 'Delete'; $('#mDelete').dataset.armed = '';
+  $('#modal').showModal();
+  const first = $('#mBody input, #mBody textarea'); if (first) first.focus();
+}
+function closeModal() { $('#modal').close(); mCtx = null; }
+$('#mClose').addEventListener('click', closeModal);
+$('#mCancel').addEventListener('click', closeModal);
+$('#mDelete').addEventListener('click', () => {
+  const b = $('#mDelete');
+  if (!b.dataset.armed) { b.dataset.armed = '1'; b.textContent = 'Sure? Tap again'; return; }
+  const it = mCtx.item; closeModal(); act(() => api.remove(it), 'Deleted');
+});
+$('#mForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const fd = new FormData($('#mForm'));
+  const K = KINDS[mCtx.kind];
+  const data = {};
+  const flat = K.fields.flatMap(f => f.row || [f]);
+  for (const f of flat) {
+    if (f.type === 'check') data[f.k] = fd.has(f.k);
+    else if (f.type === 'checks') data[f.k] = fd.getAll(f.k);
+    else data[f.k] = (fd.get(f.k) || '').toString().trim();
+  }
+  const title = data.title; delete data.title;
+  if (!title) return;
+  const { kind, item } = mCtx;
+  closeModal();
+  if (item) act(() => api.update(item, title, data), 'Saved');
+  else act(() => api.insert(kind, title, data), 'Added');
+});
+
+/* ═══ RENDER ═══ */
+const items = kind => state.items.filter(i => i.kind === kind);
+const head = (title, sub, btn) => `<div class="vhead"><div><h1>${title}</h1>${sub ? `<p>${sub}</p>` : ''}</div>${btn || ''}</div>`;
+const addBtn = (kind, txt) => `<button class="btn" data-add="${kind}">+ ${txt}</button>`;
+
+function renderBoard() {
+  const list = items('pin').sort((a, b) => (b.data.pinned ? 1 : 0) - (a.data.pinned ? 1 : 0) || b.created_at.localeCompare(a.created_at));
+  $('#v-board').innerHTML = head('Notice board.', 'Pin anything the team needs to see. Starred pins stay at the top.', addBtn('pin', 'Pin something')) +
+    (list.length ? `<div class="pins">${list.map(p => `<button class="pin c-${esc(p.data.category || 'Admin')}" data-open="${p.id}">
+      ${p.data.pinned ? '<span class="star" title="Kept at top">&#9733;</span>' : ''}
+      <span class="cat">${esc(p.data.category || 'Admin')}</span>
+      <div class="ttl">${esc(p.title)}</div>${p.data.body ? `<div class="bd">${esc(p.data.body)}</div>` : ''}${byline(p)}</button>`).join('')}</div>`
+      : `<p class="empty-note">Nothing pinned yet. Add the first one.</p>`);
+}
+
+let calMonth = (() => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1); })();
+function renderCalendar() {
+  const evs = items('event');
+  const y = calMonth.getFullYear(), m = calMonth.getMonth();
+  const start = new Date(y, m, 1); const offset = (start.getDay() + 6) % 7;
+  const gridStart = new Date(y, m, 1 - offset);
+  const today = todayISO();
+  let cells = '';
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate() + i);
+    const iso = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    const dayEvs = evs.filter(e => e.data.date === iso).sort((a, b) => (a.data.time || '').localeCompare(b.data.time || ''));
+    cells += `<div class="day ${d.getMonth() !== m ? 'out' : ''} ${iso === today ? 'today' : ''}" data-day="${iso}" role="button" tabindex="0" aria-label="${fmtDate(iso)}">
+      <span class="n">${d.getDate()}</span>${dayEvs.map(e => `<button class="chip t-${esc(e.data.type || 'Session')}" data-open="${e.id}" title="${esc(e.title)}">${e.data.time ? esc(e.data.time) + ' ' : ''}${esc(e.title)}</button>`).join('')}</div>`;
+    if (i === 34 && new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate() + 35).getMonth() !== m) break;
+  }
+  const up = evs.filter(e => e.data.date >= today).sort((a, b) => a.data.date.localeCompare(b.data.date) || (a.data.time || '').localeCompare(b.data.time || '')).slice(0, 8);
+  $('#v-calendar').innerHTML = head('Calendar.', 'Sessions, shoots, content drops, meetings and deadlines. Tap a day to add something.', addBtn('event', 'Add event')) +
+    `<div class="cal-bar"><button class="btn ghost small" data-cal="-1" aria-label="Previous month">&larr;</button><span class="month">${calMonth.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}</span><button class="btn ghost small" data-cal="1" aria-label="Next month">&rarr;</button><button class="btn ghost small" data-cal="0">Today</button></div>
+    <div class="cal"><div class="cal-dow">${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => `<div>${d}</div>`).join('')}</div><div class="cal-grid">${cells}</div></div>
+    <div class="legend">${KINDS.event.fields[1].options.map(t => `<span class="t-${t}">${t}</span>`).join('')}</div>
+    <div class="upcoming"><h2>Coming up</h2>${up.length ? up.map(e => `<button class="row" data-open="${e.id}"><span class="date">${fmtDate(e.data.date)}</span><span class="chip t-${esc(e.data.type || 'Session')}" style="width:auto;flex-shrink:0">${esc(e.data.type || 'Session')}</span><span class="main"><b>${esc(e.title)}</b><span class="byline">${e.data.time ? esc(e.data.time) + ' · ' : ''}${e.data.location ? esc(e.data.location) + ' · ' : ''}added by ${esc(e.created_by)}</span></span></button>`).join('') : '<p class="empty-note">Nothing coming up yet.</p>'}</div>`;
+}
+
+function renderBrand() {
+  const list = items('brand').sort((a, b) => a.created_at.localeCompare(b.created_at));
+  $('#v-brand').innerHTML = head('Brand strategy.', 'Who we are, how we sound and the rules every collab follows.', addBtn('brand', 'Add section')) +
+    (list.length ? `<div class="cards">${list.map(c => `<button class="card" data-open="${c.id}"><h3>${esc(c.title)}</h3>${c.data.body ? `<div class="bd">${esc(c.data.body)}</div>` : ''}${c.data.link ? `<span class="lnk">${esc(c.data.link)}</span>` : ''}${byline(c)}</button>`).join('')}</div>`
+      : `<p class="empty-note">No sections yet.</p><button class="btn ghost" id="starterBrand">Add starter sections</button>`);
+}
+
+function kanban(kind, stages, metaFn) {
+  const list = items(kind);
+  return `<div class="kanban">${stages.map((s, si) => {
+    const col = list.filter(i => (i.data.status || stages[0]) === s).sort((a, b) => (a.data.date || '9').localeCompare(b.data.date || '9'));
+    return `<div class="col"><div class="col-h"><span>${s}</span><span>${col.length}</span></div><div class="col-b">${col.map(i => `<div class="kc">
+      <div class="ttl" data-open="${i.id}" role="button" tabindex="0">${esc(i.title)}</div>${metaFn(i)}${byline(i)}
+      <div class="mv"><button class="mvb" data-move="${i.id}" data-dir="-1" ${si === 0 ? 'disabled' : ''} aria-label="Move back">&larr;</button>${i.data.owner ? av(i.data.owner, true) : ''}<button class="mvb" data-move="${i.id}" data-dir="1" ${si === stages.length - 1 ? 'disabled' : ''} aria-label="Move forward">&rarr;</button></div></div>`).join('')}</div></div>`;
+  }).join('')}</div>`;
+}
+function renderContent() {
+  $('#v-content').innerHTML = head('Content strategy.', 'Every post from idea to posted. Use the arrows to move a card along.', addBtn('content', 'Add idea')) +
+    kanban('content', KINDS.content.fields[1].row[0].options, i => `<div class="meta">${esc(i.data.platform || 'Instagram')}${i.data.date ? ' · ' + fmtDate(i.data.date) : ''}</div>`);
+}
+function renderPartners() {
+  const opts = KINDS.partner.fields[3].options;
+  $('#v-partners').innerHTML = head('Partners.', 'Venues and brands, where each deal stands, and whether our non-negotiables are covered.', addBtn('partner', 'Add partner')) +
+    kanban('partner', KINDS.partner.fields[1].row[0].options, i => `${i.data.contact ? `<div class="meta">${esc(i.data.contact)}</div>` : ''}<div class="pills">${opts.map(o => `<span class="pill ${(i.data.checks || []).includes(o) ? 'ok' : ''}">${(i.data.checks || []).includes(o) ? '&#10003; ' : ''}${esc(o)}</span>`).join('')}</div>`);
+}
+let taskFilter = 'All';
+function renderTasks() {
+  const today = todayISO();
+  let list = items('task');
+  if (taskFilter !== 'All') list = list.filter(t => t.data.owner === taskFilter);
+  list.sort((a, b) => (a.data.done ? 1 : 0) - (b.data.done ? 1 : 0) || (a.data.date || '9').localeCompare(b.data.date || '9'));
+  $('#v-tasks').innerHTML = head('Tasks.', 'Who is doing what, and by when.', addBtn('task', 'Add task')) +
+    `<div class="filters" style="margin-bottom:18px">${['All', ...TEAM].map(f => `<button class="fb ${f === taskFilter ? 'on' : ''}" data-tf="${f}">${f}</button>`).join('')}</div>` +
+    (list.length ? list.map(t => `<div class="task ${t.data.done ? 'done' : ''}"><button class="tick" data-tick="${t.id}" aria-label="${t.data.done ? 'Mark not done' : 'Mark done'}">${t.data.done ? '&#10003;' : ''}</button>
+      <div class="main" data-open="${t.id}" role="button" tabindex="0"><span class="tt">${esc(t.title)}</span>${t.data.done && t.data.done_by ? `<span class="byline">done by ${esc(t.data.done_by)}</span>` : byline(t)}</div>
+      ${t.data.date ? `<span class="due ${!t.data.done && t.data.date < today ? 'late' : ''}">${!t.data.done && t.data.date < today ? 'Late · ' : 'Due '}${fmtDate(t.data.date)}</span>` : ''}${av(t.data.owner)}</div>`).join('')
+      : `<p class="empty-note">No tasks here.</p>`);
+}
+const VERB = { added: 'added', edited: 'edited', deleted: 'deleted', moved: 'moved', completed: 'ticked off', reopened: 'reopened' };
+const NOUN = { pin: 'a pin', event: 'an event', brand: 'a brand section', content: 'a content idea', partner: 'a partner', task: 'a task' };
+function renderFeed() {
+  $('#feed').innerHTML = state.activity.length ? state.activity.slice(0, 40).map(a => `<div class="act">${av(a.who, true)}<div><b>${esc(a.who)}</b> ${VERB[a.action] || esc(a.action)} ${NOUN[a.kind] || 'something'}${a.title ? `: <q>${esc(a.title)}</q>` : ''}<span class="when">${ago(a.created_at)}</span></div></div>`).join('')
+    : '<p class="empty-note">Nothing yet. Every change anyone makes shows up here.</p>';
+}
+function renderAll() {
+  if (!state.me) return;
+  const v = currentView();
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.v === v));
+  document.querySelectorAll('.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + v));
+  ({ board: renderBoard, calendar: renderCalendar, brand: renderBrand, content: renderContent, partners: renderPartners, tasks: renderTasks })[v]();
+  renderFeed();
+}
+
+/* ═══ CLICKS ═══ */
+$('#main').addEventListener('click', e => {
+  const t = e.target;
+  const add = t.closest('[data-add]'); if (add) { openModal(add.dataset.add, null, add.dataset.add === 'task' ? { owner: state.me } : {}); return; }
+  const open = t.closest('[data-open]'); if (open) { e.stopPropagation(); const it = state.items.find(i => i.id === open.dataset.open); if (it) openModal(it.kind, it); return; }
+  const mv = t.closest('[data-move]'); if (mv) {
+    const it = state.items.find(i => i.id === mv.dataset.move);
+    const stages = (it.kind === 'content' ? KINDS.content.fields[1] : KINDS.partner.fields[1]).row[0].options;
+    const idx = stages.indexOf(it.data.status || stages[0]) + Number(mv.dataset.dir);
+    if (idx < 0 || idx >= stages.length) return;
+    act(() => api.update(it, it.title, { ...it.data, status: stages[idx] }, 'moved'), `Moved to ${stages[idx]}`); return;
+  }
+  const tick = t.closest('[data-tick]'); if (tick) {
+    const it = state.items.find(i => i.id === tick.dataset.tick); const done = !it.data.done;
+    act(() => api.update(it, it.title, { ...it.data, done, done_by: done ? state.me : '' }, done ? 'completed' : 'reopened'), done ? 'Nice one' : 'Reopened'); return;
+  }
+  const tf = t.closest('[data-tf]'); if (tf) { taskFilter = tf.dataset.tf; renderTasks(); return; }
+  const cal = t.closest('[data-cal]'); if (cal) { const d = Number(cal.dataset.cal); calMonth = d === 0 ? new Date(new Date().getFullYear(), new Date().getMonth(), 1) : new Date(calMonth.getFullYear(), calMonth.getMonth() + d, 1); renderCalendar(); return; }
+  const day = t.closest('[data-day]'); if (day) { openModal('event', null, { date: day.dataset.day, type: 'Session' }); return; }
+  if (t.closest('#starterBrand')) { act(async () => { for (const [ti, bd] of STARTER_BRAND) await api.insert('brand', ti, { body: bd, link: '' }); }, 'Starter sections added'); }
+});
+$('#main').addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[role="button"]')) { e.preventDefault(); e.target.click(); } });
+
+/* ═══ BOOT ═══ */
+(async function boot() {
+  if (DEMO) { afterAuth(); return; }
+  if (!CONFIG.supabaseUrl || !CONFIG.supabaseAnonKey || !window.supabase) { show('#gateSetup'); return; }
+  sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey);
+  const { data } = await sb.auth.getSession();
+  if (data.session) afterAuth(); else show('#gateLogin');
+  sb.auth.onAuthStateChange((ev) => { if (ev === 'SIGNED_OUT') { entered = entered; show('#gateLogin'); } });
+})();
+</script>
+</body>
+</html>
