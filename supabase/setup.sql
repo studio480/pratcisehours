@@ -47,5 +47,12 @@ create policy "team only" on public.activity
   with check ((auth.jwt() ->> 'email') = 'studio@indiebycinema.com');
 
 -- Live updates: push changes to everyone who has the page open
-alter publication supabase_realtime add table public.items;
-alter publication supabase_realtime add table public.activity;
+-- (safe to re-run: only adds a table if it isn't already live)
+do $$ begin
+  if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and tablename = 'items') then
+    alter publication supabase_realtime add table public.items;
+  end if;
+  if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and tablename = 'activity') then
+    alter publication supabase_realtime add table public.activity;
+  end if;
+end $$;
