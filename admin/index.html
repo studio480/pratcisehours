@@ -442,7 +442,13 @@ $('#loginForm').addEventListener('submit', async e => {
   e.preventDefault();
   $('#loginErr').textContent = '';
   const { error } = await sb.auth.signInWithPassword({ email: CONFIG.teamEmail, password: $('#pw').value });
-  if (error) { $('#loginErr').textContent = 'That password didn\'t work. Try again.'; return; }
+  if (error) {
+    const m = (error.message || '').toLowerCase();
+    $('#loginErr').textContent = m.includes('invalid login') ? 'That password didn\'t work. Try again.'
+      : m.includes('not confirmed') ? 'The team login exists but isn\'t confirmed yet (Supabase → Authentication → Users).'
+      : 'Login error: ' + error.message;
+    return;
+  }
   $('#pw').value = '';
   afterAuth();
 });
