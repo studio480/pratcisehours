@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>PH Studio Room</title>
+<link rel="manifest" href="/admin/manifest.webmanifest">
+<link rel="icon" type="image/png" href="/admin/icon-192.png">
+<link rel="apple-touch-icon" href="/admin/apple-touch-icon.png">
+<meta name="theme-color" content="#3d3ff2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Studio Room">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -182,6 +190,16 @@ dialog::backdrop{background:rgba(14,14,18,.6)}
 .m-foot .right{display:flex;gap:10px;margin-left:auto}
 .m-meta{font-family:'Space Mono',monospace;font-size:10px;opacity:.55;padding:0 20px 4px;letter-spacing:.04em}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bell{display:inline-flex;align-items:center;gap:7px;border:2px solid var(--ink);background:var(--paper);padding:7px 11px;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.bell:hover{background:var(--paper-2)}
+.bell .bdot{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--ink);background:var(--paper)}
+.bell.on{background:var(--cobalt);color:#fff}
+.bell.on .bdot{background:var(--yellow)}
+.steps{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:12px;margin:4px 0 6px}
+.steps li{counter-increment:s;position:relative;padding-left:42px;min-height:28px;font-size:15px;line-height:1.5}
+.steps li::before{content:counter(s);position:absolute;left:0;top:-1px;width:28px;height:28px;border:2.5px solid var(--ink);background:var(--yellow);display:flex;align-items:center;justify-content:center;font-family:'Bagel Fat One',cursive;font-size:14px}
+.help-note{font-family:'Space Mono',monospace;font-size:11px;opacity:.6;line-height:1.6;margin-top:12px}
+@media(max-width:640px){.bell .bl{display:none}.bell{padding:9px}}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--ink);color:var(--paper);font-family:'Space Mono',monospace;font-size:12px;padding:12px 18px;border:2.5px solid var(--ink);box-shadow:4px 4px 0 var(--cobalt);transition:transform .25s;z-index:200;max-width:calc(100vw - 32px)}
 .toast.on{transform:translateX(-50%) translateY(0)}
 
@@ -245,6 +263,7 @@ main{padding:24px 16px 60px}
     <div class="top-row">
       <a class="logo" href="#board">Practise Hours<em>.</em><small>Studio Room</small></a>
       <div class="me">
+        <button class="bell" id="bellBtn" hidden aria-label="Notifications"><span class="bdot"></span><span class="bl" id="bellLabel">Notify me</span></button>
         <button class="me-chip" id="meChip" title="Switch user"><span class="av sm" id="meAv"></span><span class="nm" id="meName"></span><span aria-hidden="true">&#8644;</span></button>
         <button class="btn ghost small" id="logoutBtn">Log out</button>
       </div>
@@ -269,6 +288,11 @@ main{padding:24px 16px 60px}
   </div>
 </div>
 
+<dialog id="helpDlg">
+  <div class="m-head"><h2>Get notifications</h2><button type="button" class="m-x" data-close-help aria-label="Close">&times;</button></div>
+  <div class="m-body" id="helpBody"></div>
+  <div class="m-foot"><div class="right"><button type="button" class="btn small" data-close-help>Got it</button></div></div>
+</dialog>
 <dialog id="modal">
   <form id="mForm" method="dialog">
     <div class="m-head"><h2 id="mTitle"></h2><button type="button" class="m-x" id="mClose" aria-label="Close">&times;</button></div>
@@ -293,7 +317,8 @@ main{padding:24px 16px 60px}
 const CONFIG = {
   supabaseUrl: 'https://qpvyrqxnpzvcpbjuwqun.supabase.co',
   supabaseAnonKey: 'sb_publishable_50jJKvjuFm9IiWXZFV6RLA_KxGxGkoK',  // publishable key (safe to publish)
-  teamEmail: 'studio@indiebycinema.com'  // the one shared login you create in Supabase
+  teamEmail: 'studio@indiebycinema.com',  // the one shared login you create in Supabase
+  vapidPublicKey: 'BAm015JCZLBv5f7frD4nFIjRV7i8lzXV-buie_9hVU9oyk0OCjKWT3_uAYEhR_9puP-UOxZToNQKuiznDVRnJZU'  // push notifications (public half)
 };
 const TEAM = ['Abdullah', 'Marcus', 'Fatih'];
 
@@ -476,9 +501,71 @@ async function enterApp() {
         .subscribe();
     }
     setInterval(renderAll, 60000);
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && state.me) refresh(); });
   }
+  syncPush();
   await refresh();
 }
+
+/* ═══ PUSH NOTIFICATIONS ═══ */
+const IS_IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const IS_STANDALONE = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const PUSH_OK = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+let swReg = null;
+async function getReg() {
+  if (swReg) return swReg;
+  if (!('serviceWorker' in navigator)) return null;
+  try { swReg = await navigator.serviceWorker.register('/admin/sw.js', { scope: '/admin/' }); } catch (e) { console.warn('SW', e); return null; }
+  return swReg;
+}
+function b64ToBytes(s) { const p = '='.repeat((4 - s.length % 4) % 4); const raw = atob((s + p).replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from(raw, c => c.charCodeAt(0)); }
+async function currentSub() { const r = await getReg(); return r && r.pushManager ? r.pushManager.getSubscription() : null; }
+async function saveSub(sub) {
+  const { error } = await sb.from('push_subs').upsert({ endpoint: sub.endpoint, who: state.me, sub: sub.toJSON(), updated_at: new Date().toISOString() }, { onConflict: 'endpoint' });
+  if (error) throw error;
+}
+function setBell(on) {
+  $('#bellBtn').classList.toggle('on', on);
+  $('#bellLabel').textContent = on ? 'Notifying' : 'Notify me';
+  $('#bellBtn').title = on ? `Notifications on for ${state.me} on this device. Tap to turn off.` : 'Turn on notifications';
+}
+async function syncPush() {
+  if (DEMO) return;
+  $('#bellBtn').hidden = false;
+  if (!PUSH_OK) { setBell(false); return; }
+  const sub = await currentSub();
+  setBell(!!sub && Notification.permission === 'granted');
+  if (sub) { try { await saveSub(sub); } catch (e) { console.warn(e); } }   // keeps the device tagged with whoever is picked
+}
+function helpDialog(kind) {
+  const body = {
+    ios: `<p style="margin-bottom:14px;line-height:1.6">On iPhone, notifications only work once Studio Room is on your home screen.</p>
+      <ol class="steps"><li>In Safari, tap the <b>Share</b> button (the square with the arrow).</li><li>Choose <b>Add to Home Screen</b>, then <b>Add</b>.</li><li>Open <b>Studio Room</b> from your home screen, log in, and tap <b>Notify me</b>.</li></ol>
+      <p class="help-note">Needs iOS 16.4 or newer. Open this page in Safari, not inside Instagram or another app.</p>`,
+    denied: `<p style="line-height:1.6">Notifications are blocked for this site.</p><ol class="steps" style="margin-top:14px"><li>iPhone: Settings → Notifications → <b>Studio Room</b> → Allow.</li><li>Android / desktop: tap the lock icon by the address, then allow Notifications.</li><li>Come back and tap <b>Notify me</b> again.</li></ol>`,
+    unsupported: `<p style="line-height:1.6">This browser can't receive notifications. Try Chrome on Android or desktop, or add Studio Room to your iPhone home screen from Safari.</p>`
+  }[kind];
+  $('#helpBody').innerHTML = body;
+  $('#helpDlg').showModal();
+}
+document.querySelectorAll('[data-close-help]').forEach(b => b.addEventListener('click', () => $('#helpDlg').close()));
+$('#bellBtn').addEventListener('click', async () => {
+  if (!PUSH_OK) { helpDialog(IS_IOS && !IS_STANDALONE ? 'ios' : 'unsupported'); return; }
+  if (Notification.permission === 'denied') { helpDialog('denied'); return; }
+  const existing = await currentSub();
+  if (existing && Notification.permission === 'granted') {
+    try { await sb.from('push_subs').delete().eq('endpoint', existing.endpoint); await existing.unsubscribe(); } catch (e) { console.warn(e); }
+    setBell(false); toast('Notifications off on this device'); return;
+  }
+  try {
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') { if (perm === 'denied') helpDialog('denied'); return; }
+    const reg = await getReg(); await navigator.serviceWorker.ready;
+    const sub = existing || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(CONFIG.vapidPublicKey) });
+    await saveSub(sub);
+    setBell(true); toast(`Notifications on for ${state.me}`);
+  } catch (e) { toast('Could not turn on: ' + (e.message || e)); }
+});
 
 /* ═══ NAV ═══ */
 $('#tabs').innerHTML = VIEWS.map(v => `<button class="tab" data-v="${v.id}">${v.label}</button>`).join('');
@@ -653,6 +740,7 @@ $('#main').addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key ==
 
 /* ═══ BOOT ═══ */
 (async function boot() {
+  getReg();
   if (DEMO) { afterAuth(); return; }
   if (!CONFIG.supabaseUrl || !CONFIG.supabaseAnonKey || !window.supabase) { show('#gateSetup'); return; }
   sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey);
