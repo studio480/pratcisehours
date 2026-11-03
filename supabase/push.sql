@@ -39,3 +39,22 @@ select cron.schedule(
   );
   $job$
 );
+
+-- Fire the notify function whenever something is added or changed
+-- (does the same job as a Dashboard "Database Webhook", set up in SQL instead)
+create or replace function public.ph_notify_items() returns trigger
+language plpgsql security definer set search_path = public as $fn$
+begin
+  perform net.http_post(
+    url     := 'https://qpvyrqxnpzvcpbjuwqun.supabase.co/functions/v1/notify',
+    headers := '{"Content-Type": "application/json", "x-ph-secret": "PASTE_WEBHOOK_SECRET_HERE"}'::jsonb,
+    body    := jsonb_build_object(
+      'type', TG_OP, 'table', TG_TABLE_NAME, 'schema', TG_TABLE_SCHEMA,
+      'record', to_jsonb(NEW),
+      'old_record', case when TG_OP = 'UPDATE' then to_jsonb(OLD) else null end)
+  );
+  return NEW;
+end $fn$;
+drop trigger if exists ph_notify_items on public.items;
+create trigger ph_notify_items after insert or update on public.items
+  for each row execute function public.ph_notify_items();
