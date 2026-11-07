@@ -8,7 +8,7 @@
 -- Everything on the board, calendar, brand, content, partners and tasks
 create table if not exists public.items (
   id          uuid primary key default gen_random_uuid(),
-  kind        text not null check (kind in ('pin','event','brand','content','partner','task')),
+  kind        text not null check (kind in ('pin','event','brand','content','partner','task','file')),
   title       text not null,
   data        jsonb not null default '{}'::jsonb,
   created_by  text not null check (created_by in ('Abdullah','Marcus','Fatih')),

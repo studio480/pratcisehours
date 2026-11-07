@@ -41,6 +41,9 @@ export function planForChange(p) {
       msgs.push({ to: [d.owner], title: `✅ ${by} gave you a task`, body: r.title + (d.date ? ` · due ${fmtDate(d.date)}` : ""), url: "/admin/#tasks", tag: `task-${r.id}` });
     } else if (r.kind === "partner") {
       msgs.push({ to: others(by), title: `🤝 New partner from ${by}`, body: r.title + (d.status ? ` · ${d.status}` : ""), url: "/admin/#partners", tag: `partner-${r.id}` });
+    } else if (r.kind === "file") {
+      // one notification per folder burst (same tag), so a 10-file upload doesn't buzz 10 times
+      msgs.push({ to: others(by), title: `📎 ${by} uploaded to ${d.folder || "General"}`, body: r.title, url: "/admin/#files", tag: `files-${by}-${d.folder || "General"}` });
     }
   }
 
