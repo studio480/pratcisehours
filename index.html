@@ -375,8 +375,20 @@ footer{padding:22px 20px;flex-direction:column;align-items:flex-start}
 /* ═══════════ SESSION 1.7 · 3D SPINNING NUMBER ═══════════ */
 .r17{max-width:1080px;margin:0 auto 72px;padding:56px 44px 0}
 .r17-stage{position:relative;display:block;width:100%;aspect-ratio:1/1;background:var(--ink);border:3px solid var(--ink);box-shadow:10px 10px 0 var(--cobalt);overflow:hidden;cursor:pointer;perspective:1100px;padding:0;transform:rotate(-1deg);transition:box-shadow .2s,transform .2s}
-.r17-stage:hover{box-shadow:12px 12px 0 var(--yellow);transform:rotate(0deg)}
-.r17-stage:focus-visible{outline:3px solid var(--yellow);outline-offset:4px}
+.r17-stage:hover,.r17-stage.playing{box-shadow:12px 12px 0 var(--yellow);transform:rotate(0deg)}
+.r17-hit{position:absolute;inset:0;z-index:4;background:transparent;border:0;cursor:pointer;padding:0}
+.r17-hit:focus-visible{outline:3px solid var(--yellow);outline-offset:-8px}
+.r17-player{position:absolute;inset:0;z-index:5;background:#000;opacity:0;pointer-events:none;transition:opacity .45s ease}
+.r17-player iframe{display:block;width:100%;height:100%;border:0}
+.r17-stage.playing .r17-player{opacity:1;pointer-events:auto}
+.r17-stage.playing .r17-hit,.r17-stage.playing .r17-hint{display:none}
+.r17-stage .r17-scene,.r17-stage .r17-glare{transition:opacity .45s ease}
+.r17-stage.playing .r17-scene,.r17-stage.playing .r17-glare{opacity:0}
+.r17-stage.playing .r17-vf{z-index:6;opacity:.55}
+.r17-stage.playing .r17-rec{z-index:6}
+.r17-back{position:absolute;left:14px;bottom:14px;z-index:7;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:var(--yellow);color:var(--ink);border:2.5px solid var(--ink);padding:8px 12px;box-shadow:3px 3px 0 var(--cobalt);cursor:pointer}
+.r17-back:hover{background:var(--paper)}
+.r17-back:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
 .r17-glare{position:absolute;border-radius:50%;mix-blend-mode:screen;pointer-events:none;filter:blur(var(--b,6px));animation:glow 7s ease-in-out infinite;animation-delay:var(--dl,0s)}
 @keyframes glow{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
 .r17-vf{position:absolute;width:44px;height:44px;border:0 solid rgba(250,248,241,.9);pointer-events:none;z-index:3}
@@ -399,14 +411,6 @@ footer{padding:22px 20px;flex-direction:column;align-items:flex-start}
 .r17-watch{display:inline-flex;align-items:center;gap:8px;margin:10px 12px 0 0;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:var(--yellow);color:var(--ink);padding:14px 20px;border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);cursor:pointer;transition:transform .1s,box-shadow .1s}
 .r17-watch:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--cobalt)}
 .r17-watch:focus-visible{outline:3px solid var(--cobalt);outline-offset:3px}
-.r17-dlg{border:3px solid var(--ink);box-shadow:10px 10px 0 var(--cobalt);background:var(--ink);padding:0;width:min(440px,calc(100vw - 28px));max-height:calc(100vh - 28px);overflow:hidden}
-.r17-dlg::backdrop{background:rgba(14,14,18,.78)}
-.r17-dlg-head{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--cobalt);color:#fff;padding:12px 16px;border-bottom:3px solid var(--ink)}
-.r17-dlg-head b{font-family:'Bagel Fat One',cursive;font-size:20px;font-weight:400}
-.r17-dlg-x{background:none;border:2px solid #fff;color:#fff;width:32px;height:32px;font-size:18px;cursor:pointer}
-.r17-dlg iframe{display:block;width:100%;height:min(720px,calc(100vh - 150px));border:0;background:#000}
-.r17-dlg-foot{display:flex;justify-content:center;padding:10px;background:var(--ink)}
-.r17-dlg-foot a{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper)}
 .r17-photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px;margin-top:40px}
 .r17-photos img{width:100%;aspect-ratio:4/5;object-fit:cover;border:2.5px solid var(--ink);box-shadow:5px 5px 0 var(--ink);background:var(--paper-2)}
 .r17-photos img:nth-child(odd){transform:rotate(-1.2deg)}.r17-photos img:nth-child(even){transform:rotate(1deg)}
@@ -475,13 +479,16 @@ footer{padding:22px 20px;flex-direction:column;align-items:flex-start}
 <section class="r17" aria-labelledby="r17Title">
 <div class="collab-tag">Session 1.7 &middot; Done</div>
 <div class="recap-grid">
-<button class="r17-stage" id="r17Stage" aria-label="Play the session 1.7 reel">
+<div class="r17-stage" id="r17Stage">
 <span class="r17-glare" style="left:52%;top:6%;width:30%;height:30%;--b:8px;--dl:0s;background:radial-gradient(circle,rgba(245,217,40,.30) 0%,rgba(245,217,40,.38) 62%,rgba(245,217,40,.6) 86%,rgba(245,217,40,.9) 95%,rgba(245,217,40,0) 100%)"></span><span class="r17-glare" style="left:80%;top:22%;width:13%;height:13%;--b:5px;--dl:1s;background:radial-gradient(circle,rgba(61,63,242,.30) 0%,rgba(61,63,242,.38) 62%,rgba(61,63,242,.6) 86%,rgba(61,63,242,.9) 95%,rgba(61,63,242,0) 100%)"></span><span class="r17-glare" style="left:43%;top:30%;width:10%;height:10%;--b:4px;--dl:2s;background:radial-gradient(circle,rgba(232,67,47,.30) 0%,rgba(232,67,47,.38) 62%,rgba(232,67,47,.6) 86%,rgba(232,67,47,.9) 95%,rgba(232,67,47,0) 100%)"></span><span class="r17-glare" style="left:2%;top:36%;width:20%;height:20%;--b:12px;--dl:.5s;background:radial-gradient(circle,rgba(61,63,242,.30) 0%,rgba(61,63,242,.38) 62%,rgba(61,63,242,.6) 86%,rgba(61,63,242,.9) 95%,rgba(61,63,242,0) 100%)"></span><span class="r17-glare" style="left:14%;top:52%;width:28%;height:28%;--b:22px;--dl:3s;background:radial-gradient(circle,rgba(232,67,47,.30) 0%,rgba(232,67,47,.38) 62%,rgba(232,67,47,.6) 86%,rgba(232,67,47,.9) 95%,rgba(232,67,47,0) 100%)"></span><span class="r17-glare" style="left:9%;top:70%;width:11%;height:11%;--b:5px;--dl:1.5s;background:radial-gradient(circle,rgba(245,217,40,.30) 0%,rgba(245,217,40,.38) 62%,rgba(245,217,40,.6) 86%,rgba(245,217,40,.9) 95%,rgba(245,217,40,0) 100%)"></span><span class="r17-glare" style="left:78%;top:62%;width:9%;height:9%;--b:3px;--dl:2.5s;background:radial-gradient(circle,rgba(232,67,47,.30) 0%,rgba(232,67,47,.38) 62%,rgba(232,67,47,.6) 86%,rgba(232,67,47,.9) 95%,rgba(232,67,47,0) 100%)"></span><span class="r17-glare" style="left:70%;top:70%;width:18%;height:18%;--b:10px;--dl:.8s;background:radial-gradient(circle,rgba(250,248,241,.30) 0%,rgba(250,248,241,.38) 62%,rgba(250,248,241,.6) 86%,rgba(250,248,241,.9) 95%,rgba(250,248,241,0) 100%)"></span><span class="r17-glare" style="left:48%;top:64%;width:8%;height:8%;--b:3px;--dl:3.5s;background:radial-gradient(circle,rgba(250,248,241,.30) 0%,rgba(250,248,241,.38) 62%,rgba(250,248,241,.6) 86%,rgba(250,248,241,.9) 95%,rgba(250,248,241,0) 100%)"></span><span class="r17-glare" style="left:34%;top:11%;width:7%;height:7%;--b:4px;--dl:4s;background:radial-gradient(circle,rgba(250,248,241,.30) 0%,rgba(250,248,241,.38) 62%,rgba(250,248,241,.6) 86%,rgba(250,248,241,.9) 95%,rgba(250,248,241,0) 100%)"></span><span class="r17-glare" style="left:60%;top:38%;width:22%;height:22%;--b:16px;--dl:2s;background:radial-gradient(circle,rgba(61,63,242,.30) 0%,rgba(61,63,242,.38) 62%,rgba(61,63,242,.6) 86%,rgba(61,63,242,.9) 95%,rgba(61,63,242,0) 100%)"></span><span class="r17-glare" style="left:84%;top:6%;width:6%;height:6%;--b:3px;--dl:1s;background:radial-gradient(circle,rgba(245,160,70,.30) 0%,rgba(245,160,70,.38) 62%,rgba(245,160,70,.6) 86%,rgba(245,160,70,.9) 95%,rgba(245,160,70,0) 100%)"></span><span class="r17-glare" style="left:1%;top:14%;width:10%;height:10%;--b:9px;--dl:4.5s;background:radial-gradient(circle,rgba(232,67,47,.30) 0%,rgba(232,67,47,.38) 62%,rgba(232,67,47,.6) 86%,rgba(232,67,47,.9) 95%,rgba(232,67,47,0) 100%)"></span><span class="r17-glare" style="left:4%;top:60%;width:12%;height:12%;--b:7px;--dl:3s;background:radial-gradient(circle,rgba(61,63,242,.30) 0%,rgba(61,63,242,.38) 62%,rgba(61,63,242,.6) 86%,rgba(61,63,242,.9) 95%,rgba(61,63,242,0) 100%)"></span><span class="r17-glare" style="left:54%;top:52%;width:7%;height:7%;--b:3px;--dl:.2s;background:radial-gradient(circle,rgba(245,160,70,.30) 0%,rgba(245,160,70,.38) 62%,rgba(245,160,70,.6) 86%,rgba(245,160,70,.9) 95%,rgba(245,160,70,0) 100%)"></span><span class="r17-glare" style="left:38%;top:72%;width:16%;height:16%;--b:14px;--dl:5s;background:radial-gradient(circle,rgba(245,160,70,.30) 0%,rgba(245,160,70,.38) 62%,rgba(245,160,70,.6) 86%,rgba(245,160,70,.9) 95%,rgba(245,160,70,0) 100%)"></span>
 <span class="r17-vf tl"></span><span class="r17-vf tr"></span><span class="r17-vf bl"></span><span class="r17-vf br"></span>
 <span class="r17-rec"><i></i>REC</span>
 <span class="r17-scene"><span class="r17-num" id="r17Num"><span style="color:#f5d928;transform:translateZ(0.0px)">1.7</span><span style="color:rgb(59,61,238);transform:translateZ(-2.2px)" aria-hidden="true">1.7</span><span style="color:rgb(57,59,235);transform:translateZ(-4.4px)" aria-hidden="true">1.7</span><span style="color:rgb(56,57,232);transform:translateZ(-6.6px)" aria-hidden="true">1.7</span><span style="color:rgb(54,55,229);transform:translateZ(-8.8px)" aria-hidden="true">1.7</span><span style="color:rgb(53,53,226);transform:translateZ(-11.0px)" aria-hidden="true">1.7</span><span style="color:rgb(51,51,223);transform:translateZ(-13.2px)" aria-hidden="true">1.7</span><span style="color:rgb(49,49,220);transform:translateZ(-15.4px)" aria-hidden="true">1.7</span><span style="color:rgb(48,48,217);transform:translateZ(-17.6px)" aria-hidden="true">1.7</span><span style="color:rgb(46,46,214);transform:translateZ(-19.8px)" aria-hidden="true">1.7</span><span style="color:rgb(45,44,211);transform:translateZ(-22.0px)" aria-hidden="true">1.7</span><span style="color:rgb(43,42,208);transform:translateZ(-24.2px)" aria-hidden="true">1.7</span><span style="color:rgb(41,40,205);transform:translateZ(-26.4px)" aria-hidden="true">1.7</span><span style="color:rgb(40,38,202);transform:translateZ(-28.6px)" aria-hidden="true">1.7</span><span style="color:rgb(38,36,199);transform:translateZ(-30.8px)" aria-hidden="true">1.7</span><span style="color:#0e0e12;transform:translateZ(-33.0px)" aria-hidden="true">1.7</span></span></span>
 <span class="r17-hint">&#9654; Watch &ldquo;The Fit&rdquo;</span>
-</button>
+<button class="r17-hit" id="r17Hit" type="button" aria-label="Play &ldquo;The Fit&rdquo;, the session 1.7 film"></button>
+<div class="r17-player" id="r17Player"></div>
+<button class="r17-back" id="r17Back" type="button" hidden>&larr; Back to 1.7</button>
+</div>
 <div class="recap-text r17-text">
 <h2 id="r17Title">Fashion Rerun, Al Quoz.</h2>
 <p class="r17-meta">Fri 30 Oct &middot; 5&ndash;9PM</p>
@@ -494,11 +501,6 @@ footer{padding:22px 20px;flex-direction:column;align-items:flex-start}
 </div>
 <div class="r17-photos" id="r17Photos" hidden></div>
 </section>
-<dialog class="r17-dlg" id="r17Dlg" aria-label="Session 1.7 reel">
-<div class="r17-dlg-head"><b>&ldquo;The Fit&rdquo; &middot; Session 1.7</b><button class="r17-dlg-x" id="r17Close" type="button" aria-label="Close">&times;</button></div>
-<iframe id="r17Frame" title="&ldquo;The Fit&rdquo;, a Practise Hours session 1.7 film" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
-<div class="r17-dlg-foot"><a href="https://www.instagram.com/reel/DfXVSv4uxBl/" target="_blank" rel="noopener">Watch on Instagram &rarr;</a></div>
-</dialog>
 
 <section class="recap-feature" aria-labelledby="recapTitle">
 <div class="collab-tag">Session 1.6 &middot; Done</div>
@@ -1118,28 +1120,31 @@ submitBtn.disabled = false; submitBtn.textContent = orig;
 const S17_PHOTOS = [];
 (function(){
 const stage = document.getElementById('r17Stage'), num = document.getElementById('r17Num');
-const dlg = document.getElementById('r17Dlg'), frame = document.getElementById('r17Frame');
-if(!stage || !dlg) return;
+const player = document.getElementById('r17Player'), back = document.getElementById('r17Back');
+if(!stage || !player) return;
 const EMBED = 'https://drive.google.com/file/d/19g9iBjzyzLc7SdZEi2uuoxskqbTsS_QJ/preview';
 const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let busy = false;
-function openReel(){
-  frame.src = EMBED;
-  if(dlg.showModal) dlg.showModal(); else window.open('https://drive.google.com/file/d/19g9iBjzyzLc7SdZEi2uuoxskqbTsS_QJ/view','_blank');
+function showFilm(){
+  player.innerHTML = '<iframe src="' + EMBED + '" title="The Fit, a Practise Hours session 1.7 film" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+  stage.classList.add('playing'); back.hidden = false; back.focus({ preventScroll: true });
 }
 function play(){
-  if(busy) return;
-  if(still){ openReel(); return; }
+  if(busy || stage.classList.contains('playing')) return;
+  if(still){ showFilm(); return; }
   busy = true;
   num.classList.remove('spin'); void num.offsetWidth; num.classList.add('spin');
-  setTimeout(() => { openReel(); }, 1000);
+  setTimeout(showFilm, 1000);
   setTimeout(() => { num.classList.remove('spin'); busy = false; }, 1250);
 }
-stage.addEventListener('click', play);
-document.getElementById('r17Watch').addEventListener('click', play);
-document.getElementById('r17Close').addEventListener('click', () => dlg.close());
-dlg.addEventListener('click', e => { if(e.target === dlg) dlg.close(); });
-dlg.addEventListener('close', () => { frame.src = 'about:blank'; });
+function stop(){
+  stage.classList.remove('playing'); back.hidden = true;
+  setTimeout(() => { if(!stage.classList.contains('playing')) player.innerHTML = ''; }, 450);
+  document.getElementById('r17Hit').focus({ preventScroll: true });
+}
+document.getElementById('r17Hit').addEventListener('click', play);
+document.getElementById('r17Watch').addEventListener('click', () => { stage.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'center' }); play(); });
+back.addEventListener('click', stop);
 const ph = document.getElementById('r17Photos');
 if(S17_PHOTOS.length){ ph.innerHTML = S17_PHOTOS.map(src => `<img src="${src}" alt="Session 1.7 at Fashion Rerun" loading="lazy">`).join(''); ph.hidden = false; }
 })();
