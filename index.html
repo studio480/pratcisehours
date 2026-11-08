@@ -404,7 +404,7 @@ footer{padding:22px 20px;flex-direction:column;align-items:flex-start}
 .r17-dlg-head{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--cobalt);color:#fff;padding:12px 16px;border-bottom:3px solid var(--ink)}
 .r17-dlg-head b{font-family:'Bagel Fat One',cursive;font-size:20px;font-weight:400}
 .r17-dlg-x{background:none;border:2px solid #fff;color:#fff;width:32px;height:32px;font-size:18px;cursor:pointer}
-.r17-dlg iframe{display:block;width:100%;height:min(720px,calc(100vh - 150px));border:0;background:#fff}
+.r17-dlg iframe{display:block;width:100%;height:min(720px,calc(100vh - 150px));border:0;background:#000}
 .r17-dlg-foot{display:flex;justify-content:center;padding:10px;background:var(--ink)}
 .r17-dlg-foot a{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper)}
 .r17-photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px;margin-top:40px}
@@ -496,8 +496,8 @@ footer{padding:22px 20px;flex-direction:column;align-items:flex-start}
 </section>
 <dialog class="r17-dlg" id="r17Dlg" aria-label="Session 1.7 reel">
 <div class="r17-dlg-head"><b>&ldquo;The Fit&rdquo; &middot; Session 1.7</b><button class="r17-dlg-x" id="r17Close" type="button" aria-label="Close">&times;</button></div>
-<iframe id="r17Frame" title="Practise Hours session 1.7 reel" allow="autoplay; encrypted-media; picture-in-picture" scrolling="no"></iframe>
-<div class="r17-dlg-foot"><a href="https://www.instagram.com/reel/DfXVSv4uxBl/" target="_blank" rel="noopener">Not loading? Watch on Instagram &rarr;</a></div>
+<iframe id="r17Frame" title="&ldquo;The Fit&rdquo;, a Practise Hours session 1.7 film" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
+<div class="r17-dlg-foot"><a href="https://www.instagram.com/reel/DfXVSv4uxBl/" target="_blank" rel="noopener">Watch on Instagram &rarr;</a></div>
 </dialog>
 
 <section class="recap-feature" aria-labelledby="recapTitle">
@@ -1120,12 +1120,12 @@ const S17_PHOTOS = [];
 const stage = document.getElementById('r17Stage'), num = document.getElementById('r17Num');
 const dlg = document.getElementById('r17Dlg'), frame = document.getElementById('r17Frame');
 if(!stage || !dlg) return;
-const EMBED = 'https://www.instagram.com/reel/DfXVSv4uxBl/embed/';
+const EMBED = 'https://drive.google.com/file/d/19g9iBjzyzLc7SdZEi2uuoxskqbTsS_QJ/preview';
 const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let busy = false;
 function openReel(){
   frame.src = EMBED;
-  if(dlg.showModal) dlg.showModal(); else window.open('https://www.instagram.com/reel/DfXVSv4uxBl/','_blank');
+  if(dlg.showModal) dlg.showModal(); else window.open('https://drive.google.com/file/d/19g9iBjzyzLc7SdZEi2uuoxskqbTsS_QJ/view','_blank');
 }
 function play(){
   if(busy) return;
